@@ -23,6 +23,7 @@ unsigned char chip8_fontset[80] = {
 
 struct {
 	FILE *rom;
+
 	uint8_t delay;
 	uint8_t sound;
 	uint8_t memory[4096]; 
