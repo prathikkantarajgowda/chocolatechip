@@ -35,7 +35,7 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 
 	/* Opens ROM */
 	if (!(cpu->rom = fopen(romfile, "rb"))) {
-		printf("Invalid ROM filename: %s", romfile);
+		fprintf(stderr, "Invalid ROM filename: %s", romfile);
 		exit(1);
 	}
 
@@ -52,18 +52,18 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 }
 
 void
-tick_timers(struct cpu_t *cpu)
+update_timers(struct cpu_t *cpu)
 {
 	if (cpu->delay > 0)
 		cpu->delay--;
 	if (cpu->sound > 0) {
 		cpu->sound--;
-		printf("beep");
+		printf("beep\n");
 	}
 }
 
 void
 tick(struct cpu_t *cpu)
 {
-	tick_timers(cpu);
+	update_timers(cpu);
 }

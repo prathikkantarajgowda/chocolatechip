@@ -37,5 +37,5 @@ struct cpu_t {
 };
 
 void init_cpu(struct cpu_t *, char *);
-void tick_timers(struct cpu_t *);
+void update_timers(struct cpu_t *);
 void tick(struct cpu_t *);
