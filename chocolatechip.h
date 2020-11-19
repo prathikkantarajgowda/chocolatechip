@@ -36,6 +36,6 @@ struct cpu_t {
 	uint16_t stack[16];
 };
 
-void init_cpu(struct cpu_t *, char *);
-void update_timers(struct cpu_t *);
-void tick(struct cpu_t *);
+static void init_cpu(struct cpu_t *, char *);
+static void update_timers(struct cpu_t *);
+static void tick(struct cpu_t *);

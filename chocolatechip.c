@@ -4,6 +4,14 @@
 
 #include "chocolatechip.h"
 
+
+/*
+ * todo: 
+ *	 - keyboard
+ *	 - graphics (SDL2?)
+ *	 - makefile
+ */
+
 int
 main(int argc, char **argv)
 {
@@ -16,7 +24,7 @@ main(int argc, char **argv)
 	init_cpu(&cpu, argv[1]);
 }
 
-void
+static void
 init_cpu(struct cpu_t *cpu, char *romfile)
 {
 	/*
@@ -39,6 +47,8 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 		exit(1);
 	}
 
+	printf("%s rom successfully loaded\n", romfile);
+
 	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
 	fread(cpu->memory + 0x200, 1, 4096 - 0x200, cpu->rom);
 	fclose(cpu->rom);
@@ -51,7 +61,7 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 	cpu->sound = 0;
 }
 
-void
+static void
 update_timers(struct cpu_t *cpu)
 {
 	if (cpu->delay > 0)
@@ -62,7 +72,7 @@ update_timers(struct cpu_t *cpu)
 	}
 }
 
-void
+static void
 tick(struct cpu_t *cpu)
 {
 	update_timers(cpu);
