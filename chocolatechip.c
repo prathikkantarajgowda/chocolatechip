@@ -16,11 +16,25 @@ main(int argc, char **argv)
 void
 init_cpu(cpu_t cpu, char *romfile)
 {
+	/* Clears memory */
+	for (int i = 0; i < 4096; i++)
+		memory[i] = 0;
+
+	/* Clears stack and V registers */
+	for (int i = 0; i < 16; i++) {
+		stack[i] = 0;
+		V[i] = 0;
+	}
+	
 	/* Loads fontset into memory */
 	for (int i = 0; i < 80; i++)
 		cpu->memory[i];
 
 
+	/* Sets program counter to point at the first ROM instruction */
+	PC = 0x200;
+
+	/* Opens ROM */
 	if (!(cpu->rom = fopen(romfile, "rb"))) {
 		printf("Invalid ROM filename: %s", romfile);
 		exit(1);
