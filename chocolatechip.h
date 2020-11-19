@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 unsigned char chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -38,3 +38,5 @@ struct {
 
 void init_cpu();
 void load_rom(char *romfile);
+void tick_timers(cpu_t *cpu);
+void tick(cpu_t *cpu);

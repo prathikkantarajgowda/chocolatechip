@@ -1,7 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
-#include "chip8.h"
+#include "chocolatechip.h"
 
 int
 main(int argc, char **argv)
@@ -14,25 +15,21 @@ main(int argc, char **argv)
 }
 
 void
-init_cpu(cpu_t cpu, char *romfile)
+init_cpu(cpu_t *cpu, char *romfile)
 {
-	/* Clears memory */
-	for (int i = 0; i < 4096; i++)
-		memory[i] = 0;
-
-	/* Clears stack and V registers */
-	for (int i = 0; i < 16; i++) {
-		stack[i] = 0;
-		V[i] = 0;
-	}
+	/*
+	 * todo: clear display?
+	 */
+	
+	/* Clears memory, stack, and V registers */
+	memset(cpu->memory, 0, 4096);
+	memset(cpu->stack; 0; 16);
+	memset(cpu->V; 0; 16);
 	
 	/* Loads fontset into memory */
 	for (int i = 0; i < 80; i++)
 		cpu->memory[i];
 
-
-	/* Sets program counter to point at the first ROM instruction */
-	PC = 0x200;
 
 	/* Opens ROM */
 	if (!(cpu->rom = fopen(romfile, "rb"))) {
@@ -42,9 +39,29 @@ init_cpu(cpu_t cpu, char *romfile)
 
 	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
 	fread(cpu->memory + 0x200, 1, 4096 - 0x200, cpu->rom);
+	fclose(cpu->rom);
+
+	/* Sets program counter to point at the first ROM instruction */
+	cpu->PC = 0x200;
 
 	/* Initializes delay and sound to zero */
 	cpu->delay = 0;
 	cpu->sound = 0;
 }
-	
+
+void
+tick_timers(cpu_t *cpu)
+{
+	if (cpu->delay > 0)
+		cpu->delay--;
+	if (cpu->sound > 0) {
+		cpu->sound--;
+		printf("beep");
+	}
+}
+
+void
+tick(cpu_t *cpu)
+{
+	tick_timers(cpu);
+}
