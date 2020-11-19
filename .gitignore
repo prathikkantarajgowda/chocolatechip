@@ -1,3 +1,4 @@
+
 # -*- mode: gitignore; -*-
 *~
 \#*\#
@@ -43,3 +44,6 @@ flycheck_*.el
 
 # directory configuration
 .dir-locals.el
+
+# network security
+/network-security.data
