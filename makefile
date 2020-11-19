@@ -11,4 +11,4 @@ chocolatechip: chocolatechip.c chocolatechip.h
 .PHONY: clean
 
 clean:
-	rm -f *.o *~ chocolatechip *.c#
+	rm -f *.o *~ chocolatechip *.c# 
