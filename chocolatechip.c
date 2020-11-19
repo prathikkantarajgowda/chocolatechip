@@ -9,7 +9,6 @@
  * todo: 
  *	 - keyboard
  *	 - graphics (SDL2?)
- *	 - makefile
  */
 
 int
@@ -63,7 +62,7 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 
 static void
 update_timers(struct cpu_t *cpu)
-{
+
 	if (cpu->delay > 0)
 		cpu->delay--;
 	if (cpu->sound > 0) {
