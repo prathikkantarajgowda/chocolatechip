@@ -21,7 +21,7 @@ unsigned char chip8_fontset[80] = {
 };
 
 
-struct {
+struct cpu_t {
 	FILE *rom;
 
 	uint8_t delay;
@@ -34,9 +34,8 @@ struct {
 	uint16_t opcode;     
 	uint16_t PC;
 	uint16_t stack[16];
-} cpu_t;
+};
 
-void init_cpu();
-void load_rom(char *romfile);
-void tick_timers(cpu_t *cpu);
-void tick(cpu_t *cpu);
+void init_cpu(struct cpu_t *, char *);
+void tick_timers(struct cpu_t *);
+void tick(struct cpu_t *);

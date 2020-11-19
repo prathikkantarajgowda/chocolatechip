@@ -12,10 +12,12 @@ main(int argc, char **argv)
 		return 1;
 	}
 
+	struct cpu_t cpu;
+	init_cpu(&cpu, argv[1]);
 }
 
 void
-init_cpu(cpu_t *cpu, char *romfile)
+init_cpu(struct cpu_t *cpu, char *romfile)
 {
 	/*
 	 * todo: clear display?
@@ -23,12 +25,12 @@ init_cpu(cpu_t *cpu, char *romfile)
 	
 	/* Clears memory, stack, and V registers */
 	memset(cpu->memory, 0, 4096);
-	memset(cpu->stack; 0; 16);
-	memset(cpu->V; 0; 16);
+	memset(cpu->stack, 0, 16);
+	memset(cpu->V, 0, 16);
 	
 	/* Loads fontset into memory */
 	for (int i = 0; i < 80; i++)
-		cpu->memory[i];
+		cpu->memory[i] = chip8_fontset[i];
 
 
 	/* Opens ROM */
@@ -50,7 +52,7 @@ init_cpu(cpu_t *cpu, char *romfile)
 }
 
 void
-tick_timers(cpu_t *cpu)
+tick_timers(struct cpu_t *cpu)
 {
 	if (cpu->delay > 0)
 		cpu->delay--;
@@ -61,7 +63,7 @@ tick_timers(cpu_t *cpu)
 }
 
 void
-tick(cpu_t *cpu)
+tick(struct cpu_t *cpu)
 {
 	tick_timers(cpu);
 }
