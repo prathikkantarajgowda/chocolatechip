@@ -5,7 +5,7 @@ PKGCONFIGFLAGS=-D_REENTRANT -I/usr/include/SDL2 -lSDL2
 
 all: chocolatechip
 
-chocolatechip: chocolatechip.c chocolatechip.h
+chocolatechip: chocolatechip.c
 	$(CC) $(CFLAGS) $(PKGCONFIGFLAGS) -o $@ $<
 
 .PHONY: clean
