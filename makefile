@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic
+CFLAGS=-ansi -Wall -Wextra -pedantic
 PKGCONFIGFLAGS=-D_REENTRANT -I/usr/include/SDL2 -lSDL2
 
 
