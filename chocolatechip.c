@@ -33,7 +33,7 @@ static unsigned char chip8_fontset[80] = {
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-struct cpu_t {
+struct cpu {
 	FILE *rom;
 
 	uint8_t delay;
@@ -48,9 +48,9 @@ struct cpu_t {
 	uint16_t stack[16];
 };
 
-static void init_cpu(struct cpu_t *, char *);
-static void update_timers(struct cpu_t *);
-static void tick(struct cpu_t *);
+static void init_cpu(struct cpu *, char *);
+static void update_timers(struct cpu *);
+static void tick(struct cpu *);
 
 int
 main(int argc, char **argv)
@@ -60,29 +60,29 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	struct cpu_t cpu;
-	init_cpu(&cpu, argv[1]);
+	struct cpu chip_8;
+	init_cpu(&chip_8, argv[1]);
 }
 
 static void
-init_cpu(struct cpu_t *cpu, char *romfile)
+init_cpu(struct cpu *chip_8, char *romfile)
 {
 	/*
 	 * todo: clear display?
 	 */
 	
 	/* Clears memory, stack, and V registers */
-	memset(cpu->memory, 0, 4096);
-	memset(cpu->stack, 0, 16);
-	memset(cpu->V, 0, 16);
+	memset(chip_8->memory, 0, 4096);
+	memset(chip_8->stack, 0, 16);
+	memset(chip_8->V, 0, 16);
 	
 	/* Loads fontset into memory */
 	for (int i = 0; i < 80; i++)
-		cpu->memory[i] = chip8_fontset[i];
+		chip_8->memory[i] = chip8_fontset[i];
 
 
 	/* Opens ROM */
-	if (!(cpu->rom = fopen(romfile, "rb"))) {
+	if (!(chip_8->rom = fopen(romfile, "rb"))) {
 		fprintf(stderr, "Invalid ROM filename: %s", romfile);
 		exit(1);
 	}
@@ -90,30 +90,30 @@ init_cpu(struct cpu_t *cpu, char *romfile)
 	printf("%s rom successfully loaded\n", romfile);
 
 	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
-	fread(cpu->memory + 0x200, 1, 4096 - 0x200, cpu->rom);
-	fclose(cpu->rom);
+	fread(chip_8->memory + 0x200, 1, 4096 - 0x200, chip_8->rom);
+	fclose(chip_8->rom);
 
 	/* Sets program counter to point at the first ROM instruction */
-	cpu->PC = 0x200;
+	chip_8->PC = 0x200;
 
 	/* Initializes delay and sound to zero */
-	cpu->delay = 0;
-	cpu->sound = 0;
+	chip_8->delay = 0;
+	chip_8->sound = 0;
 }
 
 static void
-update_timers(struct cpu_t *cpu)
+update_timers(struct cpu *chip_8)
 {
-	if (cpu->delay > 0)
-		cpu->delay--;
-	if (cpu->sound > 0) {
-		cpu->sound--;
+	if (chip_8->delay > 0)
+		chip_8->delay--;
+	if (chip_8->sound > 0) {
+		chip_8->sound--;
 		printf("beep\n");
 	}
 }
 
 static void
-tick(struct cpu_t *cpu)
+tick(struct cpu *chip_8)
 {
-	update_timers(cpu);
+	update_timers(chip_8);
 }
