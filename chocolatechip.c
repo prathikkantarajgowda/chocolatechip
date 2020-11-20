@@ -55,20 +55,20 @@ static void tick(struct cpu *);
 int
 main(int argc, char **argv)
 {
-	struct cpu chip_8;
+	struct cpu chip8;
 
 	if (argc != 2) {
 		printf("One ROM file needed. Usage: chocolatechip rom.ch8\n");
 		return 1;
 	}
 
-	init_cpu(&chip_8, argv[1]);
+	init_cpu(&chip8, argv[1]);
 
 	return 0;
 }
 
 static void
-init_cpu(struct cpu *chip_8, char *romfile)
+init_cpu(struct cpu *chip8, char *romfile)
 {
 	/*
 	 * todo: clear display?
@@ -76,17 +76,17 @@ init_cpu(struct cpu *chip_8, char *romfile)
 	int i;
 	
 	/* Clears memory, stack, and V registers */
-	memset(chip_8->memory, 0, 4096);
-	memset(chip_8->stack, 0, 16);
-	memset(chip_8->V, 0, 16);
+	memset(chip8->memory, 0, 4096);
+	memset(chip8->stack, 0, 16);
+	memset(chip8->V, 0, 16);
 	
 	/* Loads fontset into memory */
 	for (i = 0; i < 80; i++)
-		chip_8->memory[i] = chip8_fontset[i];
+		chip8->memory[i] = chip8_fontset[i];
 
 
 	/* Opens ROM */
-	if (!(chip_8->rom = fopen(romfile, "rb"))) {
+	if (!(chip8->rom = fopen(romfile, "rb"))) {
 		fprintf(stderr, "Invalid ROM filename: %s", romfile);
 		exit(1);
 	}
@@ -94,30 +94,30 @@ init_cpu(struct cpu *chip_8, char *romfile)
 	printf("%s rom successfully loaded\n", romfile);
 
 	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
-	fread(chip_8->memory + 0x200, 1, 4096 - 0x200, chip_8->rom);
-	fclose(chip_8->rom);
+	fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
+	fclose(chip8->rom);
 
 	/* Sets program counter to point at the first ROM instruction */
-	chip_8->PC = 0x200;
+	chip8->PC = 0x200;
 
 	/* Initializes delay and sound to zero */
-	chip_8->delay = 0;
-	chip_8->sound = 0;
+	chip8->delay = 0;
+	chip8->sound = 0;
 }
 
 static void
-update_timers(struct cpu *chip_8)
+update_timers(struct cpu *chip8)
 {
-	if (chip_8->delay > 0)
-		chip_8->delay--;
-	if (chip_8->sound > 0) {
-		chip_8->sound--;
+	if (chip8->delay > 0)
+		chip8->delay--;
+	if (chip8->sound > 0) {
+		chip8->sound--;
 		printf("beep\n");
 	}
 }
 
 static void
-tick(struct cpu *chip_8)
+tick(struct cpu *chip8)
 {
-	update_timers(chip_8);
+	update_timers(chip8);
 }
