@@ -13,8 +13,9 @@
 
 #include <SDL2/SDL.h>
 
-#define SCREEN_WIDTH   640
-#define SCREEN_HEIGHT  320
+#define SCREEN_WIDTH   64
+#define SCREEN_HEIGHT  32
+#define SCALE          10
 
 static uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
@@ -38,8 +39,6 @@ static uint8_t chip8_fontset[80] = {
 
 struct cpu {
 	FILE *rom;
-
-	SDL_Surface *display;
 	
 	uint8_t delay;
 	uint8_t sound;
@@ -53,15 +52,22 @@ struct cpu {
 	uint16_t stack[16];
 };
 
+struct display {
+	SDL_Window    *win;
+	SDL_Renderer  *renderer;
+	SDL_Texture   *texture;
+};
+
 static void init_cpu(struct cpu *, char *);
-static void init_display(struct cpu *chip8);
+static void init_display(struct display *);
 static void update_timers(struct cpu *);
 static void cycle(struct cpu *);
 
 int
 main(int argc, char **argv)
 {
-	struct cpu chip8;
+	struct cpu      chip8;
+	struct display  screen;
 
 	if (argc != 2) {
 		printf("One ROM file needed. Usage: chocolatechip rom.ch8\n");
@@ -70,7 +76,7 @@ main(int argc, char **argv)
 
 	init_cpu(&chip8, argv[1]);
 
-	init_display(&chip8);
+	init_display(&screen);
 
 	return 0;
 }
@@ -82,8 +88,6 @@ init_cpu(struct cpu *chip8, char *romfile)
 	 * todo: clear display?
 	 */
 
-	chip8->display = NULL;
-	
 	/* Clears memory, stack, and V registers */
 	memset(chip8->memory, 0, 4096);
 	memset(chip8->stack, 0, 16);
@@ -115,23 +119,31 @@ init_cpu(struct cpu *chip8, char *romfile)
 
 
 static void
-init_display(struct cpu *chip8)
+init_display(struct display *screen)
 {
-	SDL_Window *win;
-	
+	/* Initializes SDL */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
 		fprintf(stderr, "Could not initialize SDL: %s.\n",
 		    SDL_GetError());
 		exit(1);
 	}
 
-	win = SDL_CreateWindow("chocolatechip", SDL_WINDOWPOS_CENTERED,
-	    SDL_WINDOWPOS_CENTERED, 640, 320, 0);
-
-	if (!win) {
+	/* Creates window */
+	screen->win = SDL_CreateWindow("chocolatechip", SDL_WINDOWPOS_CENTERED,
+	    SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, 0);
+	if (!screen->win) {
 		fprintf(stderr, "Could not create window: %s.\n",
 		    SDL_GetError());
 		SDL_Quit();
+		exit(1);
+	}
+
+	/* Creates renderer */
+	screen->renderer = SDL_CreateRenderer(screen->win, -1,
+	    SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	if (!screen->renderer) {
+		fprintf(stderr, "Could not create renderer: %s.\n",
+		    SDL_GetError());
 		exit(1);
 	}
 }
