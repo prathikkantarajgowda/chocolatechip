@@ -8,13 +8,15 @@
  *	 - graphics (SDL2?)
  */
 
-#include <stdint.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include <stdlib.h>
-#include <string.h>
 
-static unsigned char chip8_fontset[80] = {
+#include <SDL2/SDL.h>
+
+#define SCREEN_WIDTH   640
+#define SCREEN_HEIGHT  320
+
+static uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
         0x20, 0x60, 0x20, 0x20, 0x70, /* 1 */
         0xF0, 0x10, 0xF0, 0x80, 0xF0, /* 2 */
@@ -33,9 +35,12 @@ static unsigned char chip8_fontset[80] = {
         0xF0, 0x80, 0xF0, 0x80, 0x80  /* F */
 };
 
+
 struct cpu {
 	FILE *rom;
 
+	SDL_Surface *display;
+	
 	uint8_t delay;
 	uint8_t sound;
 	uint8_t memory[4096]; 
@@ -49,8 +54,9 @@ struct cpu {
 };
 
 static void init_cpu(struct cpu *, char *);
+static void init_display(struct cpu *chip8);
 static void update_timers(struct cpu *);
-static void tick(struct cpu *);
+static void cycle(struct cpu *);
 
 int
 main(int argc, char **argv)
@@ -64,6 +70,8 @@ main(int argc, char **argv)
 
 	init_cpu(&chip8, argv[1]);
 
+	init_display(&chip8);
+
 	return 0;
 }
 
@@ -73,7 +81,8 @@ init_cpu(struct cpu *chip8, char *romfile)
 	/*
 	 * todo: clear display?
 	 */
-	int i;
+
+	chip8->display = NULL;
 	
 	/* Clears memory, stack, and V registers */
 	memset(chip8->memory, 0, 4096);
@@ -81,13 +90,12 @@ init_cpu(struct cpu *chip8, char *romfile)
 	memset(chip8->V, 0, 16);
 	
 	/* Loads fontset into memory */
-	for (i = 0; i < 80; i++)
-		chip8->memory[i] = chip8_fontset[i];
+	memcpy(chip8->memory, chip8_fontset, 80);
 
 
 	/* Opens ROM */
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
-		fprintf(stderr, "Invalid ROM filename: %s", romfile);
+		fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
 		exit(1);
 	}
 
@@ -105,6 +113,29 @@ init_cpu(struct cpu *chip8, char *romfile)
 	chip8->sound = 0;
 }
 
+
+static void
+init_display(struct cpu *chip8)
+{
+	SDL_Window *win;
+	
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
+		fprintf(stderr, "Could not initialize SDL: %s.\n",
+		    SDL_GetError());
+		exit(1);
+	}
+
+	win = SDL_CreateWindow("chocolatechip", SDL_WINDOWPOS_CENTERED,
+	    SDL_WINDOWPOS_CENTERED, 640, 320, 0);
+
+	if (!win) {
+		fprintf(stderr, "Could not create window: %s.\n",
+		    SDL_GetError());
+		SDL_Quit();
+		exit(1);
+	}
+}
+
 static void
 update_timers(struct cpu *chip8)
 {
@@ -117,7 +148,7 @@ update_timers(struct cpu *chip8)
 }
 
 static void
-tick(struct cpu *chip8)
+cycle(struct cpu *chip8)
 {
 	update_timers(chip8);
 }

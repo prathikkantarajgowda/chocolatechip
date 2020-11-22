@@ -1,5 +1,5 @@
-CC=gcc
-CFLAGS=-ansi -Wall -Wextra -pedantic
+CC=clang
+CFLAGS=`sdl2-config --libs --cflags` -ansi -Wall -Wextra -pedantic
 PKGCONFIGFLAGS=-D_REENTRANT -I/usr/include/SDL2 -lSDL2
 
 
