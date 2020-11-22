@@ -6,6 +6,7 @@
  * todo: 
  *	 - keyboard
  *	 - graphics (SDL2?)
+ *	 - get/fetch/execute
  */
 
 #include <stdio.h>
@@ -15,7 +16,7 @@
 
 #define SCREEN_WIDTH   64
 #define SCREEN_HEIGHT  32
-#define SCALE          10
+#define SCALE          20
 
 static uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
@@ -60,6 +61,7 @@ struct display {
 
 static void init_cpu(struct cpu *, char *);
 static void init_display(struct display *);
+static void kill_display(struct display *);
 static void update_timers(struct cpu *);
 static void cycle(struct cpu *);
 
@@ -70,13 +72,16 @@ main(int argc, char **argv)
 	struct display  screen;
 
 	if (argc != 2) {
-		printf("One ROM file needed. Usage: chocolatechip rom.ch8\n");
+		fprintf(stderr,
+		    "One ROM file needed. Usage: chocolatechip rom.ch8\n");
 		return 1;
 	}
 
 	init_cpu(&chip8, argv[1]);
-
 	init_display(&screen);
+	
+	SDL_Delay(5000);
+	kill_display(&screen);
 
 	return 0;
 }
@@ -156,6 +161,17 @@ init_display(struct display *screen)
 		    SDL_GetError());
 		exit(1);
 	}
+
+	printf("SDL, window, renderer, and texture successfully initialized\n");
+}
+
+static void
+kill_display(struct display *screen)
+{
+	SDL_DestroyWindow(screen->win);
+	SDL_DestroyRenderer(screen->renderer);
+	SDL_DestroyTexture(screen->texture);
+	SDL_Quit();
 }
 
 static void
