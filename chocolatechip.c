@@ -146,6 +146,16 @@ init_display(struct display *screen)
 		    SDL_GetError());
 		exit(1);
 	}
+
+	/* Creates texture */
+	screen->texture = SDL_CreateTexture(screen->renderer,
+	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+	    SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE);
+	if (!screen->texture) {
+		fprintf(stderr, "Could not create texture: %s.\n",
+		    SDL_GetError());
+		exit(1);
+	}
 }
 
 static void
