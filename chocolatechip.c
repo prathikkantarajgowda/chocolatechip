@@ -3,9 +3,18 @@
  *
  * chocolatechip.c 
  *
+ *
+ *
+ * completed:
+ *	 - chip8 cpu data structure
+ *	 - SDL display data structure
+ *	 - initialization function for CPU
+ *	 - initialization function for display (SDL)
+ *
  * todo: 
  *	 - keyboard
- *	 - graphics (SDL2?)
+ *	 - graphics
+ *	 - sound (just need beep)
  *	 - get/fetch/execute
  */
 
@@ -39,13 +48,13 @@ static uint8_t chip8_fontset[80] = {
 
 
 struct cpu {
-	FILE *rom;
+	FILE     *rom;
 	
-	uint8_t delay;
-	uint8_t sound;
-	uint8_t memory[4096]; 
-	uint8_t SP;
-	uint8_t V[16];
+	uint8_t  delay;
+	uint8_t  sound;
+	uint8_t  memory[4096]; 
+	uint8_t  SP;
+	uint8_t  V[16];
 
 	uint16_t I;
 	uint16_t opcode;     
