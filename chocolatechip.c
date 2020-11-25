@@ -13,7 +13,6 @@
  *
  * todo: 
  *	 - keyboard
- *	 - graphics
  *	 - sound (just need beep)
  *	 - get/fetch/execute
  */
@@ -25,7 +24,11 @@
 
 #define SCREEN_WIDTH   64
 #define SCREEN_HEIGHT  32
-#define SCALE          20
+#define SCALE          30
+#define NUM_PIXELS     2048
+
+#define WHITE          4294967295
+#define BLACK          0
 
 static uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
@@ -66,11 +69,14 @@ struct display {
 	SDL_Window    *win;
 	SDL_Renderer  *renderer;
 	SDL_Texture   *texture;
+
+	uint32_t pixels[NUM_PIXELS];
 };
 
 static void init_cpu(struct cpu *, char *);
 static void init_display(struct display *);
 static void kill_display(struct display *);
+static void update_display(struct display *);
 static void update_timers(struct cpu *);
 static void cycle(struct cpu *);
 
@@ -88,8 +94,7 @@ main(int argc, char **argv)
 
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
-	
-	SDL_Delay(5000);
+
 	kill_display(&screen);
 
 	return 0;
@@ -98,10 +103,6 @@ main(int argc, char **argv)
 static void
 init_cpu(struct cpu *chip8, char *romfile)
 {
-	/*
-	 * todo: clear display?
-	 */
-
 	/* Clears memory, stack, and V registers */
 	memset(chip8->memory, 0, 4096);
 	memset(chip8->stack, 0, 16);
@@ -135,6 +136,12 @@ init_cpu(struct cpu *chip8, char *romfile)
 static void
 init_display(struct display *screen)
 {
+	int i, j;
+	i = j = 0;
+
+	/* Initializes pixels to black */
+	memset(screen->pixels, BLACK, NUM_PIXELS * 4);
+	
 	/* Initializes SDL */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
 		fprintf(stderr, "Could not initialize SDL: %s.\n",
@@ -155,7 +162,10 @@ init_display(struct display *screen)
 	/* Creates renderer */
 	screen->renderer = SDL_CreateRenderer(screen->win, -1,
 	    SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	SDL_RenderSetLogicalSize(screen->renderer, SCREEN_WIDTH*SCALE,
+	    SCREEN_HEIGHT*SCALE);
 	if (!screen->renderer) {
+		SDL_DestroyWindow(screen->win);
 		fprintf(stderr, "Could not create renderer: %s.\n",
 		    SDL_GetError());
 		exit(1);
@@ -163,15 +173,40 @@ init_display(struct display *screen)
 
 	/* Creates texture */
 	screen->texture = SDL_CreateTexture(screen->renderer,
-	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-	    SCREEN_WIDTH * SCALE, SCREEN_HEIGHT * SCALE);
+	    SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
+	    SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (!screen->texture) {
+		SDL_DestroyWindow(screen->win);
+		SDL_DestroyRenderer(screen->renderer);
 		fprintf(stderr, "Could not create texture: %s.\n",
 		    SDL_GetError());
 		exit(1);
 	}
 
+	SDL_RenderClear(screen->renderer);
+
 	printf("SDL, window, renderer, and texture successfully initialized\n");
+
+	for (i = 0; i < 2048; i++)
+		if (i % 2 == 0)
+			screen->pixels[i] = WHITE;
+
+	update_display(screen);
+
+	SDL_Delay(5000);
+}
+
+/*
+ * Updates display after there has been a chance to the pixels array
+ */
+static void
+update_display(struct display *screen)
+{
+	SDL_UpdateTexture(screen->texture, NULL, screen->pixels,
+	    SCREEN_WIDTH * 4);
+	SDL_RenderClear(screen->renderer);
+	SDL_RenderCopy(screen->renderer, screen->texture, NULL, NULL);
+	SDL_RenderPresent(screen->renderer);
 }
 
 static void
