@@ -23,6 +23,7 @@ struct cpu {
 
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);
-uint16_t	fetch(struct cpu *chip8);
+uint16_t	fetch(struct cpu *);
+void	        decode_execute(struct cpu *, uint16_t);
 
 #endif
