@@ -21,7 +21,8 @@ struct cpu {
 	uint16_t stack[16];
 };
 
-void	init_cpu(struct cpu *, char *);
-void	update_timers(struct cpu *);
+void	        init_cpu(struct cpu *, char *);
+void	        update_timers(struct cpu *);
+uint16_t	fetch(struct cpu *chip8);
 
 #endif

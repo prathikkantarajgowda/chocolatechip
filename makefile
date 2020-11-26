@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -ansi -Wall -Wextra -pedantic
+CFLAGS = -O2 -ansi -pedantic -Wall -Wextra -Wshadow
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2 
 LINKSDLFLAG = -lSDL2
 

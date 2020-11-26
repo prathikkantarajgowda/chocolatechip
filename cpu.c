@@ -54,6 +54,22 @@ init_cpu(struct cpu *chip8, char *romfile)
 	chip8->sound = 0;
 }
 
+uint16_t
+fetch(struct cpu *chip8)
+{
+	uint16_t opcode;
+	opcode = chip8->memory[chip8->PC] << 8 | chip8->memory[chip8->PC+1];
+
+	chip8->PC += 2;
+	return opcode;
+}
+
+void
+decode_execute(struct cpu *chip8, uint16_t opcode)
+{
+	
+}
+
 void
 update_timers(struct cpu *chip8)
 {
