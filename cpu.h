@@ -1,3 +1,10 @@
+/* 
+ * chocolatechip: a Chip-8 emulator written by Prathik Gowda
+ *
+ * cpu.h
+ *
+ */
+
 #ifndef _cpu_h_
 #define _cpu_h_
 

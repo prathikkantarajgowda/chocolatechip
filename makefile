@@ -1,3 +1,10 @@
+#
+# chocolatechip: a Chip-8 emulator written by Prathik Gowda
+#
+# cpu.h
+#
+#
+
 CC = clang
 CFLAGS = -O2 -ansi -pedantic -Wall -Wextra -Wshadow
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2 
