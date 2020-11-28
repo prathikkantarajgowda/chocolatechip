@@ -31,8 +31,8 @@ main(int argc, char **argv)
 	struct display  screen;
 
 	if (argc != 2) {
-		fprintf(stderr,
-		    "One ROM file needed. Usage: chocolatechip rom.ch8\n");
+		(void)fprintf(stderr, 
+			"One ROM file needed. Usage: chocolatechip rom.ch8\n");
 		return 1;
 	}
 

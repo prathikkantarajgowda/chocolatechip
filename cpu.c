@@ -34,24 +34,24 @@ void
 init_cpu(struct cpu *chip8, char *romfile)
 {
 	/* Clears memory, stack, and V registers */
-	memset(chip8->memory, 0, 4096);
-	memset(chip8->stack, 0, 16);
-	memset(chip8->V, 0, 16);
+	(void)memset(chip8->memory, 0, 4096);
+	(void)memset(chip8->stack, 0, 16);
+	(void)memset(chip8->V, 0, 16);
 	
 	/* Loads fontset into memory */
-	memcpy(chip8->memory, chip8_fontset, 80);
+	(void)memcpy(chip8->memory, chip8_fontset, 80);
 
 	/* Opens ROM */
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
-		fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
+		(void)fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
 		exit(1);
 	}
 
 	printf("%s rom successfully loaded\n", romfile);
 
 	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
-	fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
-	fclose(chip8->rom);
+	(void)fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
+	(void)fclose(chip8->rom);
 
 	/* Sets program counter to point at the first ROM instruction */
 	chip8->PC = 0x200;

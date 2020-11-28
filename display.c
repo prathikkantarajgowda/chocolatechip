@@ -14,11 +14,11 @@ init_display(struct display *screen)
 	i = j = 0;
 
 	/* Initializes pixels to black */
-	memset(screen->pixels, BLACK, NUM_PIXELS * 4);
+	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
 	
 	/* Initializes SDL */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
-		fprintf(stderr, "Could not initialize SDL: %s.\n",
+		(void)fprintf(stderr, "Could not initialize SDL: %s.\n",
 		    SDL_GetError());
 		exit(1);
 	}
@@ -26,9 +26,11 @@ init_display(struct display *screen)
 	/* Creates window */
 	screen->win = SDL_CreateWindow("chocolatechip", SDL_WINDOWPOS_CENTERED,
 	    SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, 0);
+
 	if (!screen->win) {
-		fprintf(stderr, "Could not create window: %s.\n",
+		(void)fprintf(stderr, "Could not create window: %s.\n",
 		    SDL_GetError());
+
 		SDL_Quit();
 		exit(1);
 	}
@@ -36,11 +38,13 @@ init_display(struct display *screen)
 	/* Creates renderer */
 	screen->renderer = SDL_CreateRenderer(screen->win, -1,
 	    SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+
 	SDL_RenderSetLogicalSize(screen->renderer, SCREEN_WIDTH*SCALE,
 	    SCREEN_HEIGHT*SCALE);
 	if (!screen->renderer) {
 		SDL_DestroyWindow(screen->win);
-		fprintf(stderr, "Could not create renderer: %s.\n",
+
+		(void)fprintf(stderr, "Could not create renderer: %s.\n",
 		    SDL_GetError());
 		exit(1);
 	}
@@ -49,10 +53,12 @@ init_display(struct display *screen)
 	screen->texture = SDL_CreateTexture(screen->renderer,
 	    SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 	    SCREEN_WIDTH, SCREEN_HEIGHT);
+
 	if (!screen->texture) {
 		SDL_DestroyWindow(screen->win);
 		SDL_DestroyRenderer(screen->renderer);
-		fprintf(stderr, "Could not create texture: %s.\n",
+
+		(void)fprintf(stderr, "Could not create texture: %s.\n",
 		    SDL_GetError());
 		exit(1);
 	}

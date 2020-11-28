@@ -11,8 +11,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-uint8_t chip8_fontset[80];
-
 struct cpu {
 	FILE     *rom;
 	
@@ -27,6 +25,8 @@ struct cpu {
 	uint16_t PC;
 	uint16_t stack[16];
 };
+
+uint8_t		chip8_fontset[80];
 
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);

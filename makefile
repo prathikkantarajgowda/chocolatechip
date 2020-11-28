@@ -27,4 +27,4 @@ display.o: display.c display.h
 .PHONY: clean
 
 clean:
-	rm -f *.o *~ chocolatechip *.c# 
+	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp
