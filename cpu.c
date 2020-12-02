@@ -1,4 +1,4 @@
-/* 
+/*
  * chocolatechip: a Chip-8 emulator written by Prathik Gowda
  *
  * cpu.c
@@ -37,7 +37,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)memset(chip8->memory, 0, 4096);
 	(void)memset(chip8->stack, 0, 16);
 	(void)memset(chip8->V, 0, 16);
-	
+
 	/* Loads fontset into memory */
 	(void)memcpy(chip8->memory, chip8_fontset, 80);
 
@@ -74,7 +74,7 @@ fetch(struct cpu *chip8)
 void
 decode_execute(struct cpu *chip8, uint16_t opcode)
 {
-	
+
 }
 
 void

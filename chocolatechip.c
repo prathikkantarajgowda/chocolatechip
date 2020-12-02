@@ -1,7 +1,7 @@
-/* 
+/*
  * chocolatechip: a Chip-8 emulator written by Prathik Gowda
  *
- * chocolatechip.c 
+ * chocolatechip.c
  *
  *
  *
@@ -11,7 +11,7 @@
  *	 - initialization function for CPU
  *	 - initialization function for display (SDL)
  *
- * todo: 
+ * todo:
  *	 - keyboard
  *	 - sound (just need beep)
  *	 - get/fetch/execute
@@ -23,6 +23,7 @@
 
 #include "cpu.h"
 #include "display.h"
+#include "input.c"
 
 int
 main(int argc, char **argv)
@@ -31,7 +32,7 @@ main(int argc, char **argv)
 	struct display  screen;
 
 	if (argc != 2) {
-		(void)fprintf(stderr, 
+		(void)fprintf(stderr,
 			"One ROM file needed. Usage: chocolatechip rom.ch8\n");
 		return 1;
 	}
@@ -39,6 +40,7 @@ main(int argc, char **argv)
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
 	update_timers(&chip8);
+	keyboard_input();
 
 	kill_display(&screen);
 
