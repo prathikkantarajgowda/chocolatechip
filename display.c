@@ -1,4 +1,4 @@
-/* 
+/*
  * chocolatechip: a Chip-8 emulator written by Prathik Gowda
  *
  * display.c
@@ -10,12 +10,9 @@
 void
 init_display(struct display *screen)
 {
-	int i, j;
-	i = j = 0;
-
 	/* Initializes pixels to black */
 	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
-	
+
 	/* Initializes SDL */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
 		(void)fprintf(stderr, "Could not initialize SDL: %s.\n",
@@ -65,9 +62,9 @@ init_display(struct display *screen)
 
 	SDL_RenderClear(screen->renderer);
 
-	printf("SDL, window, renderer, and texture successfully initialized\n");
+	(void)printf("SDL, window, renderer, and texture successfully initialized\n");
 
-	for (i = 0; i < 2048; i++)
+	for (int i = 0; i < 2048; i++)
 		if (i % 2 == 0)
 			screen->pixels[i] = WHITE;
 
@@ -97,4 +94,3 @@ kill_display(struct display *screen)
 	SDL_DestroyTexture(screen->texture);
 	SDL_Quit();
 }
-

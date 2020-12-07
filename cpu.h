@@ -24,9 +24,12 @@ struct cpu {
 	uint16_t opcode;
 	uint16_t PC;
 	uint16_t stack[16];
+
+	uint8_t keypad[16];
+	uint8_t quit_flag;
 };
 
-uint8_t		chip8_fontset[80];
+static uint8_t  chip8_fontset[80];
 
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);

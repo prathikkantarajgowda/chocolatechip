@@ -7,45 +7,35 @@
 
 #include <SDL2/SDL.h>
 
+#include "cpu.h"
+#include "input.h"
+
+
+static const uint8_t KEY_CODES[NUM_KEYS] = {
+	SDLK_1, SDLK_2, SDLK_3, SDLK_4,
+	SDLK_q, SDLK_w, SDLK_e, SDLK_r,
+	SDLK_a, SDLK_s, SDLK_d, SDLK_f,
+	SDLK_z, SDLK_x, SDLK_c, SDLK_v,
+};
+
 void
-keyboard_input()
+keyboard_input(struct cpu *chip8)
 {
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-		case SDL_KEYDOWN:
-			switch (event.key.keysym.sym) {
-			case SDLK_1:
-				printf("1 pressed\n");
-				break;
-			case SDLK_2:
-				printf("2 pressed\n");
-				break;
-			case SDLK_3:
-				printf("3 pressed\n");
-				break;
-			case SDLK_4:
-				printf("4 pressed\n");
-				break;
-			case SDLK_q:
-				printf("Q pressed\n");
-				break;
-			case SDLK_w:
-				printf("W pressed\n");
-				break;
-			case SDLK_e:
-				printf("E pressed\n");
-				break;
-			case SDLK_r:
-				printf("R pressed\n");
-				break;
-			default:
-				break;
-			}
-			break;
+		if (event.type == SDL_QUIT) {
+			chip8->quit_flag = 1;
+			return;
 		}
-
+		if (event.type == SDL_KEYDOWN)
+			printf("key pressed");
+			for (int i = 0; i < NUM_KEYS; i++)
+				if (event.key.keysym.sym == KEY_CODES[i])
+					chip8->keypad[i] = 1;
+		if (event.type == SDL_KEYUP)
+			for (int i = 0; i < NUM_KEYS; i++)
+				if (event.key.keysym.sym == KEY_CODES[i])
+					chip8->keypad[i] = 1;
 	}
 }
-

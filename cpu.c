@@ -11,7 +11,7 @@
 
 #include "cpu.h"
 
-uint8_t chip8_fontset[80] = {
+static uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
         0x20, 0x60, 0x20, 0x20, 0x70, /* 1 */
         0xF0, 0x10, 0xF0, 0x80, 0xF0, /* 2 */
@@ -33,10 +33,12 @@ uint8_t chip8_fontset[80] = {
 void
 init_cpu(struct cpu *chip8, char *romfile)
 {
-	/* Clears memory, stack, and V registers */
+	/* Clears memory, stack, V registers, keypad, and quit_flag */
 	(void)memset(chip8->memory, 0, 4096);
 	(void)memset(chip8->stack, 0, 16);
 	(void)memset(chip8->V, 0, 16);
+	(void)memset(chip8->keypad, 0, 16);
+	chip8->quit_flag = 0;
 
 	/* Loads fontset into memory */
 	(void)memcpy(chip8->memory, chip8_fontset, 80);

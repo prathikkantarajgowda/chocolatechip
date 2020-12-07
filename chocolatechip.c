@@ -23,7 +23,7 @@
 
 #include "cpu.h"
 #include "display.h"
-#include "input.c"
+#include "input.h"
 
 int
 main(int argc, char **argv)
@@ -40,7 +40,7 @@ main(int argc, char **argv)
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
 	update_timers(&chip8);
-	keyboard_input();
+	keyboard_input(&chip8);
 
 	kill_display(&screen);
 
