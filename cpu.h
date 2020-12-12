@@ -31,8 +31,6 @@ struct cpu {
 	uint8_t quit_flag;
 };
 
-static uint8_t  chip8_fontset[80];
-
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);
 uint16_t	fetch(struct cpu *);

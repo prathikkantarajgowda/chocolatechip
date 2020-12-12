@@ -10,13 +10,7 @@
 
 #include <SDL2/SDL.h>
 
-#define	SCREEN_WIDTH	64
-#define SCREEN_HEIGHT	32
-#define SCALE	        20
 #define NUM_PIXELS	2048
-
-#define WHITE	        4294967295
-#define BLACK	        0
 
 struct display {
 	SDL_Window	*win;

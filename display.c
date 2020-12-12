@@ -7,6 +7,14 @@
 
 #include "display.h"
 
+#define	SCREEN_WIDTH	64
+#define SCREEN_HEIGHT	32
+#define SCALE	        20
+#define NUM_PIXELS	2048
+
+#define WHITE	        4294967295
+#define BLACK	        0
+
 void
 init_display(struct display *screen)
 {
@@ -79,9 +87,6 @@ clear_display(struct display *screen)
 	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
 }
 
-/*
- * Updates display after there has been a chance to the pixels array
- */
 void
 update_display(struct display *screen)
 {

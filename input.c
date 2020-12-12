@@ -5,11 +5,13 @@
  *
  */
 
+#include <stdint.h>
+
 #include <SDL2/SDL.h>
 
-#include "cpu.h"
 #include "input.h"
 
+#define	NUM_KEYS	16
 
 static const uint8_t KEY_CODES[NUM_KEYS] = {
 	SDLK_1, SDLK_2, SDLK_3, SDLK_4,

@@ -5,13 +5,11 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "cpu.h"
 
-static uint8_t chip8_fontset[80] = {
+static const uint8_t chip8_fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
         0x20, 0x60, 0x20, 0x20, 0x70, /* 1 */
         0xF0, 0x10, 0xF0, 0x80, 0xF0, /* 2 */
@@ -35,7 +33,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 {
 	/* Clears memory, stack, V registers, keypad, and quit_flag */
 	(void)memset(chip8->memory, 0, 4096);
-	(void)memset(chip8->stack, 0, 16);
+	(void)memset(chip8->stack, 0, 16*2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
 	chip8->quit_flag = 0;
@@ -82,7 +80,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	 */
 	switch (opcode & 0xF000) {
 	case 0x0000:
-		switch (opcode & 0x000f) {
+		switch (opcode & 0x000F) {
 		case 0x00E0:
 			clear_display(screen);
 			update_display(screen);
@@ -90,6 +88,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		}
 		break;
 	case 0x1000:
+		chip8->PC = opcode & 0x0FFF;
 		break;
 	case 0x2000:
 		break;
@@ -100,12 +99,27 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0x5000:
 		break;
 	case 0x6000:
+		chip8->V[opcode & 0x0F00] = opcode & 0x00FF;
 		break;
 	case 0x7000:
+		chip8->V[opcode & 0x0F00] += opcode & 0x00FF;
 		break;
 	case 0x8000:
 		break;
 	case 0x9000:
+		chip8->I = opcode & 0x0FFF;
+		break;
+	case 0xA000:
+		break;
+	case 0xB000:
+		break;
+	case 0xC000:
+		break;
+	case 0xD000:
+		break;
+	case 0xE000:
+		break;
+	case 0xF000:
 		break;
 	}
 }
