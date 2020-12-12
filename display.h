@@ -1,4 +1,4 @@
-/* 
+/*
  * chocolatechip: a Chip-8 emulator written by Prathik Gowda
  *
  * display.h
@@ -27,6 +27,7 @@ struct display {
 };
 
 void	init_display(struct display *);
+void	clear_display(struct display *);
 void	update_display(struct display *);
 void	kill_display(struct display *);
 

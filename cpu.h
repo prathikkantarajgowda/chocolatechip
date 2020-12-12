@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "display.h"
+
 struct cpu {
 	FILE     *rom;
 
@@ -34,6 +36,6 @@ static uint8_t  chip8_fontset[80];
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);
 uint16_t	fetch(struct cpu *);
-void	        decode_execute(struct cpu *, uint16_t);
+void	        decode_execute(struct cpu *, struct display *, uint16_t);
 
 #endif

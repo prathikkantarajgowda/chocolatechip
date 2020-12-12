@@ -28,11 +28,12 @@ keyboard_input(struct cpu *chip8)
 			chip8->quit_flag = 1;
 			return;
 		}
-		if (event.type == SDL_KEYDOWN)
+		if (event.type == SDL_KEYDOWN) {
 			printf("key pressed");
 			for (int i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])
 					chip8->keypad[i] = 1;
+		}
 		if (event.type == SDL_KEYUP)
 			for (int i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])

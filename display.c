@@ -73,6 +73,12 @@ init_display(struct display *screen)
 	SDL_Delay(5000);
 }
 
+void
+clear_display(struct display *screen)
+{
+	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
+}
+
 /*
  * Updates display after there has been a chance to the pixels array
  */
