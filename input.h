@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _input_h_
-#define _input_h_
+#ifndef _INPUT_H_
+#define _INPUT_H_
 
 #include "cpu.h"
 

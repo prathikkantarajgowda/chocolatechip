@@ -1,8 +1,46 @@
 /*
- * chocolatechip: a Chip-8 emulator written by Prathik Gowda
+ * chocolatechip: a Chip-8 emulator written in C99 by Prathik Gowda
  *
  * cpu.c
  *
+ * completed opcodes:
+ * 	- 0x0NNN
+ * 	- 0x00E0
+ *	- 0x1NNN
+ *	- 0x6XNN
+ *	- 0x7XNN
+ *	- 0xANNN
+ *
+ * todo:
+ * 	- 0xDXYN
+ * 	- 0x00EE
+ * 	- 0x2NNN
+ * 	- 0x3XNN
+ * 	- 0x4XNN
+ * 	- 0x5XY0
+ * 	- 0x9XY0
+ * 	- 0x8XY0
+ * 	- 0x8XY1
+ * 	- 0x8XY2
+ * 	- 0x8XY3
+ * 	- 0x8XY4
+ * 	- 0x8XY5
+ * 	- 0x8XY6
+ * 	- 0x8XY7
+ * 	- 0x8XYE
+ * 	- 0xBNNN
+ * 	- 0xCXNN
+ * 	- 0xEX9E
+ * 	- 0xEXA1
+ * 	- 0xFX07
+ * 	- 0xFX15
+ * 	- 0xFX18
+ * 	- 0xFX1E
+ * 	- 0xFX0A
+ * 	- 0xFX29
+ * 	- 0xFX33
+ * 	- 0xFX55
+ * 	- 0xFX65
  */
 
 #include <string.h>
@@ -74,11 +112,18 @@ void
 decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {
 	/*
-	 * opcode & 0xF000 gets us the first nibble.
+	 * x: the second nibble. A 4-bit value, the lower 4 bits of the
+	 * high bit instruction
 	 *
+	 * y: the third nibble. A 4-bit value, the upper 4 bits of the low byte
+	 * of the instruction
 	 *
 	 */
-	switch (opcode & 0xF000) {
+
+	uint8_t		x = opcode & 0x0F00 >> 8;
+	uint8_t 	y = opcode & 0x00F0 >> 4;
+
+	switch (opcode & 0xF000) { /* first nibble */
 	case 0x0000:
 		switch (opcode & 0x000F) {
 		case 0x00E0:
@@ -99,17 +144,17 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0x5000:
 		break;
 	case 0x6000:
-		chip8->V[opcode & 0x0F00] = opcode & 0x00FF;
+		chip8->V[x] = opcode & 0x00FF;
 		break;
 	case 0x7000:
-		chip8->V[opcode & 0x0F00] += opcode & 0x00FF;
+		chip8->V[y] += opcode & 0x00FF;
 		break;
 	case 0x8000:
 		break;
 	case 0x9000:
-		chip8->I = opcode & 0x0FFF;
 		break;
 	case 0xA000:
+		chip8->I = opcode & 0x0FFF;
 		break;
 	case 0xB000:
 		break;

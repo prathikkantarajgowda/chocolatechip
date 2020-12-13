@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _cpu_h_
-#define _cpu_h_
+#ifndef _CPU_H_
+#define _CPU_H_
 
 #include <stdint.h>
 #include <stdio.h>
