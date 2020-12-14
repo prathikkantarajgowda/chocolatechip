@@ -74,7 +74,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)memset(chip8->stack, 0, 16*2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
-	chip8->quit_flag = 0;
+	chip8->draw_flag = 0;
 
 	/* Loads fontset into memory */
 	(void)memcpy(chip8->memory, chip8_fontset, 80);
@@ -120,17 +120,21 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	 *
 	 */
 
-	uint8_t		x = opcode & 0x0F00 >> 8;
-	uint8_t 	y = opcode & 0x00F0 >> 4;
+	uint8_t x = opcode & 0x0F00 >> 8;
+	uint8_t y = opcode & 0x00F0 >> 4;
 
 	switch (opcode & 0xF000) { /* first nibble */
 	case 0x0000:
-		switch (opcode & 0x000F) {
+		switch (opcode & 0x00FF) {
 		case 0x00E0:
 			clear_display(screen);
 			update_display(screen);
 			break;
+		default:
+			(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+			exit(1);
 		}
+
 		break;
 	case 0x1000:
 		chip8->PC = opcode & 0x0FFF;
@@ -147,7 +151,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->V[x] = opcode & 0x00FF;
 		break;
 	case 0x7000:
-		chip8->V[y] += opcode & 0x00FF;
+		chip8->V[x] += opcode & 0x00FF;
 		break;
 	case 0x8000:
 		break;
@@ -161,12 +165,39 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0xC000:
 		break;
 	case 0xD000:
+		draw(x % 64, y & 32, opcode & 0x000F, chip8, screen);
 		break;
 	case 0xE000:
 		break;
 	case 0xF000:
 		break;
+	default:
+		(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+		exit(1);
 	}
+}
+
+/*
+ * Not currently functioning correctly
+ */
+void
+draw(uint8_t x, uint8_t y, uint8_t n, struct cpu *chip8, struct display *screen)
+{
+	chip8->V[0xF] = 0;
+
+	for (uint8_t i = 0; i < n; i++) {
+		uint8_t sprite_data = chip8->memory[n + chip8->I];
+
+		for (uint8_t j = 0; j < 8; j++) {
+			if ((sprite_data & (0x80 >> j)) != 0) {
+				if (screen->pixels[(x+i) + ((y+j) * SCREEN_WIDTH)] != 0)
+					chip8->V[0xF] = 0;
+
+				screen->pixels[(x+i) + ((y+j) * SCREEN_WIDTH)] = WHITE;
+			}
+		}
+	}
+	chip8->draw_flag = 1;
 }
 
 void

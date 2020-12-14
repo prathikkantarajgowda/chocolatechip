@@ -7,14 +7,6 @@
 
 #include "display.h"
 
-#define	SCREEN_WIDTH	64
-#define SCREEN_HEIGHT	32
-#define SCALE	        20
-#define NUM_PIXELS	2048
-
-#define WHITE	        4294967295
-#define BLACK	        0
-
 void
 init_display(struct display *screen)
 {
@@ -72,13 +64,7 @@ init_display(struct display *screen)
 
 	(void)printf("SDL, window, renderer, and texture successfully initialized\n");
 
-	for (int i = 0; i < 2048; i++)
-		if (i % 2 == 0)
-			screen->pixels[i] = WHITE;
-
 	update_display(screen);
-
-	SDL_Delay(5000);
 }
 
 void

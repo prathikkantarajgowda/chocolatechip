@@ -36,8 +36,17 @@ main(int argc, char **argv)
 
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
-	update_timers(&chip8);
-	keyboard_input(&chip8);
+
+	while (1) {
+		update_timers(&chip8);
+		keyboard_input(&chip8, &screen);
+		decode_execute(&chip8, &screen, fetch(&chip8));
+
+		if (chip8.draw_flag == 1) {
+			update_display(&screen);
+			chip8.draw_flag = 0;
+		}
+	}
 
 	kill_display(&screen);
 

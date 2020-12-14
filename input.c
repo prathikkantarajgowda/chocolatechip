@@ -21,23 +21,26 @@ static const uint8_t KEY_CODES[NUM_KEYS] = {
 };
 
 void
-keyboard_input(struct cpu *chip8)
+keyboard_input(struct cpu *chip8, struct display *screen)
 {
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
-			chip8->quit_flag = 1;
-			return;
+			kill_display(screen);
+			exit(0);
 		}
 		if (event.type == SDL_KEYDOWN) {
-			printf("key pressed");
-			for (int i = 0; i < NUM_KEYS; i++)
+			if (event.key.keysym.sym == SDLK_ESCAPE) {
+				kill_display(screen);
+				exit(0);
+			}
+			for (uint8_t i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])
 					chip8->keypad[i] = 1;
 		}
 		if (event.type == SDL_KEYUP)
-			for (int i = 0; i < NUM_KEYS; i++)
+			for (uint8_t i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])
 					chip8->keypad[i] = 1;
 	}

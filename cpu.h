@@ -28,12 +28,13 @@ struct cpu {
 	uint16_t stack[16];
 
 	uint8_t keypad[16];
-	uint8_t quit_flag;
+	uint8_t draw_flag;
 };
 
 void	        init_cpu(struct cpu *, char *);
 void	        update_timers(struct cpu *);
 uint16_t	fetch(struct cpu *);
 void	        decode_execute(struct cpu *, struct display *, uint16_t);
+void		draw(uint8_t, uint8_t, uint8_t, struct cpu *, struct display *);
 
 #endif

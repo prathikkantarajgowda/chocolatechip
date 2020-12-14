@@ -10,6 +10,6 @@
 
 #include "cpu.h"
 
-void	keyboard_input(struct cpu *chip8);
+void	keyboard_input(struct cpu *, struct display *);
 
 #endif
