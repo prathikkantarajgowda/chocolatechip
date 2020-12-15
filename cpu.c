@@ -111,18 +111,6 @@ fetch(struct cpu *chip8)
 void
 decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {
-	/*
-	 * x: the second nibble. A 4-bit value, the lower 4 bits of the
-	 * high bit instruction
-	 *
-	 * y: the third nibble. A 4-bit value, the upper 4 bits of the low byte
-	 * of the instruction
-	 *
-	 */
-
-	uint8_t x = opcode & 0x0F00 >> 8;
-	uint8_t y = opcode & 0x00F0 >> 4;
-
 	switch (opcode & 0xF000) { /* first nibble */
 	case 0x0000:
 		switch (opcode & 0x00FF) {
@@ -148,10 +136,10 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0x5000:
 		break;
 	case 0x6000:
-		chip8->V[x] = opcode & 0x00FF;
+		chip8->V[(opcode & 0x0F00) >> 8] = opcode & 0x00FF;
 		break;
 	case 0x7000:
-		chip8->V[x] += opcode & 0x00FF;
+		chip8->V[(opcode & 0x0F00) >> 8] += opcode & 0x00FF;
 		break;
 	case 0x8000:
 		break;
@@ -165,7 +153,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0xC000:
 		break;
 	case 0xD000:
-		draw(x % 64, y & 32, opcode & 0x000F, chip8, screen);
+		op_DXYN(chip8, screen, opcode);
 		break;
 	case 0xE000:
 		break;
@@ -177,23 +165,25 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	}
 }
 
-/*
- * Not currently functioning correctly
- */
 void
-draw(uint8_t x, uint8_t y, uint8_t n, struct cpu *chip8, struct display *screen)
+op_DXYN(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {
+	uint8_t i, j, pixel;
+	uint8_t x = chip8->V[(opcode & 0x0F00) >> 8] % SCREEN_WIDTH;
+	uint8_t y = chip8->V[(opcode & 0x00F0) >> 4] % SCREEN_HEIGHT;
+	uint8_t height = opcode & 0x000F;
+
 	chip8->V[0xF] = 0;
 
-	for (uint8_t i = 0; i < n; i++) {
-		uint8_t sprite_data = chip8->memory[n + chip8->I];
+	for (i = 0; i < height; i++) {
+		pixel = chip8->memory[i + chip8->I];
 
-		for (uint8_t j = 0; j < 8; j++) {
-			if ((sprite_data & (0x80 >> j)) != 0) {
-				if (screen->pixels[(x+i) + ((y+j) * SCREEN_WIDTH)] != 0)
-					chip8->V[0xF] = 0;
+		for (j = 0; j < 8; j++) {
+			if (pixel & (0x80 >> j)) {
+				if (screen->pixels[(x+j) + ((y+i) * SCREEN_WIDTH)] != 0)
+					chip8->V[0xF] = 1;
 
-				screen->pixels[(x+i) + ((y+j) * SCREEN_WIDTH)] = WHITE;
+				screen->pixels[(x+j) + ((y+i) * SCREEN_WIDTH)] ^= WHITE;
 			}
 		}
 	}
