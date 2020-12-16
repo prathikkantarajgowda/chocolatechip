@@ -44,9 +44,9 @@ struct cpu {
 };
 
 void	        init_cpu(struct cpu *, char *);
-void	        update_timers(struct cpu *);
 uint16_t	fetch(struct cpu *);
 void	        decode_execute(struct cpu *, struct display *, uint16_t);
 void		op_DXYN(struct cpu *, struct display *, uint16_t);
+void	        update_timers(struct cpu *);
 
 #endif

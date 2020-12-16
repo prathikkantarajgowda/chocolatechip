@@ -23,7 +23,6 @@
 void
 init_display(struct display *screen)
 {
-	/* Initializes pixels to black */
 	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
 
 	/* Initializes SDL */
@@ -33,7 +32,6 @@ init_display(struct display *screen)
 		exit(1);
 	}
 
-	/* Creates window */
 	screen->win = SDL_CreateWindow("chocolatechip", SDL_WINDOWPOS_CENTERED,
 	    SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, 0);
 
@@ -45,7 +43,6 @@ init_display(struct display *screen)
 		exit(1);
 	}
 
-	/* Creates renderer */
 	screen->renderer = SDL_CreateRenderer(screen->win, -1,
 	    SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
@@ -59,7 +56,6 @@ init_display(struct display *screen)
 		exit(1);
 	}
 
-	/* Creates texture */
 	screen->texture = SDL_CreateTexture(screen->renderer,
 	    SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 	    SCREEN_WIDTH, SCREEN_HEIGHT);

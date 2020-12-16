@@ -23,7 +23,9 @@
  *	- 0x1NNN
  *	- 0x6XNN
  *	- 0x7XNN
+ *	- 0x8XY0
  *	- 0xANNN
+ *	- 0xCXNN
  *	- 0xDXYN
  *
  * todo:
@@ -33,7 +35,6 @@
  * 	- 0x4XNN
  * 	- 0x5XY0
  * 	- 0x9XY0
- * 	- 0x8XY0
  * 	- 0x8XY1
  * 	- 0x8XY2
  * 	- 0x8XY3
@@ -43,7 +44,6 @@
  * 	- 0x8XY7
  * 	- 0x8XYE
  * 	- 0xBNNN
- * 	- 0xCXNN
  * 	- 0xEX9E
  * 	- 0xEXA1
  * 	- 0xFX07
@@ -155,6 +155,14 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->V[(opcode & 0x0F00) >> 8] += opcode & 0x00FF;
 		break;
 	case 0x8000:
+		switch (opcode & 0x000F) {
+			case 0x0000:
+				chip8->V[(opcode & 0x0F00) >> 8] = chip8->V[(opcode & 0x00F0) >> 4];
+			default:
+				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+				exit(1);
+		}
+
 		break;
 	case 0x9000:
 		break;
@@ -164,6 +172,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0xB000:
 		break;
 	case 0xC000:
+		chip8->V[(opcode & 0x0F00) >> 8] = (rand() % 256) & 0x00FF;
 		break;
 	case 0xD000:
 		op_DXYN(chip8, screen, opcode);

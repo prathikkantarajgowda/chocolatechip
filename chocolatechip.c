@@ -32,6 +32,8 @@
  *
  */
 
+#include <time.h>
+
 #include "cpu.h"
 #include "display.h"
 #include "input.h"
@@ -41,6 +43,8 @@ main(int argc, char **argv)
 {
 	struct cpu      chip8;
 	struct display  screen;
+
+	srand(time(NULL));
 
 	if (argc != 2) {
 		(void)fprintf(stderr,
