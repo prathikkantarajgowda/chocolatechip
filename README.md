@@ -1,6 +1,14 @@
 # chocolatechip
 
-A Chip-8 Emulator written in C99 by Prathik
+A Chip-8 Emulator written in C99 by Prathik Gowda (IN-PROGRESS)
+
+## Overview
+- The opcodes are handled by a simple switch case statement in the cpu.c file.
+- Graphics and input are both handled by SDL2.
+	- I use an integer array of size (64 x 32) to represent the display.
+		- This is drawn onto an SDL window using a Texture and Renderer.
+- The emulator is not finished yet - however the most difficult parts are
+  finished, including the DXYN opcode. Currently will run the IBM ROM perfectly
 
 ## Resources Used
 I used and recommend all three of these resources as guides/references for the
