@@ -10,9 +10,9 @@
  *	- 0x6XNN
  *	- 0x7XNN
  *	- 0xANNN
+ *	- 0xDXYN
  *
  * todo:
- * 	- 0xDXYN
  * 	- 0x00EE
  * 	- 0x2NNN
  * 	- 0x3XNN
@@ -74,7 +74,6 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)memset(chip8->stack, 0, 16*2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
-	chip8->draw_flag = 0;
 
 	/* Loads fontset into memory */
 	(void)memcpy(chip8->memory, chip8_fontset, 80);
@@ -187,7 +186,7 @@ op_DXYN(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			}
 		}
 	}
-	chip8->draw_flag = 1;
+	update_display(screen);
 }
 
 void

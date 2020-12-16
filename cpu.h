@@ -28,7 +28,6 @@ struct cpu {
 	uint16_t stack[16];
 
 	uint8_t keypad[16];
-	uint8_t draw_flag;
 };
 
 void	        init_cpu(struct cpu *, char *);

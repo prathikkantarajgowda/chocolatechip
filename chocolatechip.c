@@ -25,7 +25,6 @@
 int
 main(int argc, char **argv)
 {
-	uint16_t	op;
 	struct cpu      chip8;
 	struct display  screen;
 
@@ -41,13 +40,7 @@ main(int argc, char **argv)
 	while (1) {
 		update_timers(&chip8);
 		keyboard_input(&chip8, &screen);
-		op = fetch(&chip8);
-		decode_execute(&chip8, &screen, op);
-
-		if (chip8.draw_flag) {
-			update_display(&screen);
-			chip8.draw_flag = 0;
-		}
+		decode_execute(&chip8, &screen, fetch(&chip8));
 	}
 
 	kill_display(&screen);
