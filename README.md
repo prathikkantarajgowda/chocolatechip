@@ -1,6 +1,6 @@
 # chocolatechip
 
-A Chip-8 Emulator written in C99 by Prathik Gowda (IN-PROGRESS)
+A CHIP-8 Emulator written in C99 by Prathik Gowda (IN-PROGRESS)
 
 ## Overview
 - The opcodes are handled by a simple switch case statement in the cpu.c file.

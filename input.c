@@ -56,6 +56,6 @@ keyboard_input(struct cpu *chip8, struct display *screen)
 		if (event.type == SDL_KEYUP)
 			for (i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])
-					chip8->keypad[i] = 1;
+					chip8->keypad[i] = 0;
 	}
 }

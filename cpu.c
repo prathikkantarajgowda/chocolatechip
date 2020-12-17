@@ -33,8 +33,11 @@
  * 	- 0x8XY7
  * 	- 0x8XYE
  *	- 0xANNN
+ *	- 0xBNNN
  *	- 0xCXNN
  *	- 0xDXYN
+ *	- 0xEX9E
+ *	- 0xEXA1
  *
  * todo:
  * 	- 0x00EE
@@ -43,9 +46,6 @@
  * 	- 0x4XNN
  * 	- 0x5XY0
  * 	- 0x9XY0
- * 	- 0xBNNN
- * 	- 0xEX9E
- * 	- 0xEXA1
  * 	- 0xFX07
  * 	- 0xFX15
  * 	- 0xFX18
@@ -123,7 +123,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	uint8_t y = (opcode & 0x00F0) >> 4;
 	uint8_t nn = opcode & 0x00FF;
 
-	switch (opcode & 0xF000) { /* first nibble */
+	switch (opcode & 0xF000) {
 	case 0x0000:
 		switch (opcode & 0x00FF) {
 		case 0x00E0:
@@ -134,7 +134,6 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
 			exit(1);
 		}
-
 		break;
 	case 0x1000:
 		chip8->PC = opcode & 0x0FFF;
@@ -210,7 +209,6 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
 				exit(1);
 		}
-
 		break;
 	case 0x9000:
 		break;
@@ -218,6 +216,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->I = opcode & 0x0FFF;
 		break;
 	case 0xB000:
+		chip8->PC = chip8->V[0x0] + (opcode & 0x0FFF);
 		break;
 	case 0xC000:
 		chip8->V[(opcode & 0x0F00) >> 8] = (rand() % 256) & 0x00FF;
@@ -226,6 +225,20 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		op_DXYN(chip8, screen, chip8->V[x] % SCREEN_WIDTH, chip8->V[y] % SCREEN_HEIGHT, opcode & 0x000F);
 		break;
 	case 0xE000:
+		switch (opcode & 0x00FF) {
+			case 0x009E:
+				if (chip8->keypad[chip8->V[x]])
+					chip8->PC += 2;
+
+				break;
+			case 0x00A1:
+				if (!chip8->keypad[chip8->V[x]])
+					chip8->PC += 2;
+
+				break;
+			default:
+				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+		}
 		break;
 	case 0xF000:
 		break;
@@ -239,6 +252,7 @@ void
 op_DXYN(struct cpu *chip8, struct display *screen, uint8_t x, uint8_t y, uint8_t height)
 {
 	uint8_t i, j, pixel;
+
 	chip8->V[0xF] = 0;
 
 	for (i = 0; i < height; i++) {
