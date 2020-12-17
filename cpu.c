@@ -24,6 +24,14 @@
  *	- 0x6XNN
  *	- 0x7XNN
  *	- 0x8XY0
+ * 	- 0x8XY1
+ * 	- 0x8XY2
+ * 	- 0x8XY3
+ * 	- 0x8XY4
+ * 	- 0x8XY5
+ * 	- 0x8XY6
+ * 	- 0x8XY7
+ * 	- 0x8XYE
  *	- 0xANNN
  *	- 0xCXNN
  *	- 0xDXYN
@@ -35,14 +43,6 @@
  * 	- 0x4XNN
  * 	- 0x5XY0
  * 	- 0x9XY0
- * 	- 0x8XY1
- * 	- 0x8XY2
- * 	- 0x8XY3
- * 	- 0x8XY4
- * 	- 0x8XY5
- * 	- 0x8XY6
- * 	- 0x8XY7
- * 	- 0x8XYE
  * 	- 0xBNNN
  * 	- 0xEX9E
  * 	- 0xEXA1
@@ -124,6 +124,10 @@ fetch(struct cpu *chip8)
 void
 decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
+	uint8_t nn = opcode & 0x00FF;
+
 	switch (opcode & 0xF000) { /* first nibble */
 	case 0x0000:
 		switch (opcode & 0x00FF) {
@@ -149,15 +153,64 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	case 0x5000:
 		break;
 	case 0x6000:
-		chip8->V[(opcode & 0x0F00) >> 8] = opcode & 0x00FF;
+		chip8->V[x] = nn;
 		break;
 	case 0x7000:
-		chip8->V[(opcode & 0x0F00) >> 8] += opcode & 0x00FF;
+		chip8->V[x] += nn;
 		break;
 	case 0x8000:
 		switch (opcode & 0x000F) {
 			case 0x0000:
-				chip8->V[(opcode & 0x0F00) >> 8] = chip8->V[(opcode & 0x00F0) >> 4];
+				chip8->V[x] = chip8->V[y];
+				break;
+			case 0x0001:
+				chip8->V[x] |= chip8->V[y];
+				break;
+			case 0x0002:
+				chip8->V[x] &= chip8->V[y];
+				break;
+			case 0x0003:
+				chip8->V[x] ^= chip8->V[y];
+				break;
+			case 0x0004:
+				chip8->V[x] += chip8->V[y];
+				break;
+			case 0x0005:
+				if (chip8->V[x] > chip8->V[y])
+					chip8->V[0xF] = 1;
+				else
+					chip8->V[0xF] = 0;
+
+				chip8->V[x] -= chip8->V[y];
+				break;
+			case 0x0006:
+				chip8->V[x] = chip8->V[y];
+
+				if (chip8->V[x] & 00000001)
+					chip8->V[0xF] = 1;
+				else
+					chip8->V[0xF] = 0;
+
+				chip8->V[x] >>= 1;
+				break;
+			case 0x0007:
+				if (chip8->V[y] > chip8->V[x])
+					chip8->V[0xF] = 1;
+				else
+					chip8->V[0xF] = 0;
+
+				chip8->V[x] = chip8->V[y] - chip8->V[x];
+				break;
+			case 0x000E:
+				chip8->V[x] = chip8->V[y];
+
+				if (chip8->V[x] & 10000000)
+					chip8->V[0xF] = 1;
+				else
+					chip8->V[0xF] = 0;
+
+				chip8->V[x] <<= 1;
+				break;
 			default:
 				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
 				exit(1);
@@ -175,7 +228,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->V[(opcode & 0x0F00) >> 8] = (rand() % 256) & 0x00FF;
 		break;
 	case 0xD000:
-		op_DXYN(chip8, screen, opcode);
+		op_DXYN(chip8, screen, chip8->V[x] % SCREEN_WIDTH, chip8->V[y] % SCREEN_HEIGHT, opcode & 0x000F);
 		break;
 	case 0xE000:
 		break;
@@ -188,13 +241,9 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 }
 
 void
-op_DXYN(struct cpu *chip8, struct display *screen, uint16_t opcode)
+op_DXYN(struct cpu *chip8, struct display *screen, uint8_t x, uint8_t y, uint8_t height)
 {
 	uint8_t i, j, pixel;
-	uint8_t x = chip8->V[(opcode & 0x0F00) >> 8] % SCREEN_WIDTH;
-	uint8_t y = chip8->V[(opcode & 0x00F0) >> 4] % SCREEN_HEIGHT;
-	uint8_t height = opcode & 0x000F;
-
 	chip8->V[0xF] = 0;
 
 	for (i = 0; i < height; i++) {
