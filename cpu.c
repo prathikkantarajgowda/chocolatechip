@@ -83,16 +83,13 @@ static const uint8_t chip8_fontset[80] = {
 void
 init_cpu(struct cpu *chip8, char *romfile)
 {
-	/* Clears memory, stack, V registers, keypad, and quit_flag */
 	(void)memset(chip8->memory, 0, 4096);
 	(void)memset(chip8->stack, 0, 16*2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
 
-	/* Loads fontset into memory */
 	(void)memcpy(chip8->memory, chip8_fontset, 80);
 
-	/* Opens ROM */
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
 		(void)fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
 		exit(1);
@@ -104,10 +101,8 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
 	(void)fclose(chip8->rom);
 
-	/* Sets program counter to point at the first ROM instruction */
 	chip8->PC = 0x200;
 
-	/* Initializes delay and sound to zero */
 	chip8->delay = 0;
 	chip8->sound = 0;
 }
