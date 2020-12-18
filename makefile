@@ -14,10 +14,12 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CC = clang
-CFLAGS = -O2 -std=c99 -pedantic -Wall -Wextra -Wshadow
+CC = gcc
+CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
+CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
+CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2
-LINKSDLFLAG = -lSDL2
+LINKSDLFLAG = -lSDL2 -fsanitize=undefined
 
 all: chocolatechip
 

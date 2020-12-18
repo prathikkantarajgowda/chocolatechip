@@ -44,15 +44,18 @@ keyboard_input(struct cpu *chip8, struct display *screen)
 			kill_display(screen);
 			exit(0);
 		}
+
 		if (event.type == SDL_KEYDOWN) {
 			if (event.key.keysym.sym == SDLK_ESCAPE) {
 				kill_display(screen);
 				exit(0);
 			}
+
 			for (i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])
 					chip8->keypad[i] = 1;
 		}
+
 		if (event.type == SDL_KEYUP)
 			for (i = 0; i < NUM_KEYS; i++)
 				if (event.key.keysym.sym == KEY_CODES[i])

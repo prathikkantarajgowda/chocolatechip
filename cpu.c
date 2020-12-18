@@ -278,7 +278,7 @@ op_DXYN(struct cpu *chip8, struct display *screen, uint8_t x, uint8_t y, uint8_t
 
 		for (j = 0; j < 8; j++) {
 			if (pixel & (0x80 >> j)) {
-				if (screen->pixels[(x+j) + ((y+i) * SCREEN_WIDTH)] != 0)
+				if (screen->pixels[(x+j) + ((y+i) * SCREEN_WIDTH)])
 					chip8->V[0xF] = 1;
 
 				screen->pixels[(x+j) + ((y+i) * SCREEN_WIDTH)] ^= WHITE;

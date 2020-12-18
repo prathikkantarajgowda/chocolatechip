@@ -23,7 +23,7 @@
 static void init_sdl(void);
 static void create_window(struct display *);
 static void create_renderer(struct display *);
-static void create_texturer(struct display *);
+static void create_texture(struct display *);
 
 void
 init_display(struct display *screen)
@@ -32,7 +32,7 @@ init_display(struct display *screen)
 	init_sdl();
 	create_window(screen);
 	create_renderer(screen);
-	create_texturer(screen);
+	create_texture(screen);
 	SDL_RenderClear(screen->renderer);
 
 	(void)printf("SDL, window, renderer, and texture successfully initialized\n");
@@ -109,7 +109,7 @@ create_renderer(struct display *screen)
 }
 
 static void
-create_texturer(struct display *screen)
+create_texture(struct display *screen)
 {
 	screen->texture = SDL_CreateTexture(screen->renderer,
 	    SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
