@@ -38,6 +38,12 @@
  *	- 0xDXYN
  *	- 0xEX9E
  *	- 0xEXA1
+ * 	- 0xFX07
+ * 	- 0xFX15
+ * 	- 0xFX18
+ * 	- 0xFX1E
+ * 	- 0xFX0A
+ * 	- 0xFX29
  *
  * todo:
  * 	- 0x00EE
@@ -46,12 +52,6 @@
  * 	- 0x4XNN
  * 	- 0x5XY0
  * 	- 0x9XY0
- * 	- 0xFX07
- * 	- 0xFX15
- * 	- 0xFX18
- * 	- 0xFX1E
- * 	- 0xFX0A
- * 	- 0xFX29
  * 	- 0xFX33
  * 	- 0xFX55
  * 	- 0xFX65
@@ -80,11 +80,16 @@ static const uint8_t chip8_fontset[80] = {
         0xF0, 0x80, 0xF0, 0x80, 0x80  /* F */
 };
 
+static void op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
+static void op_FX0A(struct cpu *, uint8_t);
+static void op_FX33(struct cpu *, uint8_t);
+static void op_error(uint16_t);
+
 void
 init_cpu(struct cpu *chip8, char *romfile)
 {
 	(void)memset(chip8->memory, 0, 4096);
-	(void)memset(chip8->stack, 0, 16*2);
+	(void)memset(chip8->stack, 0, 16 * 2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
 
@@ -131,8 +136,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			update_display(screen);
 			break;
 		default:
-			(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
-			exit(1);
+			op_error(opcode);
 		}
 		break;
 	case 0x1000:
@@ -154,60 +158,51 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		break;
 	case 0x8000:
 		switch (opcode & 0x000F) {
-			case 0x0000:
-				chip8->V[x] = chip8->V[y];
-				break;
-			case 0x0001:
-				chip8->V[x] |= chip8->V[y];
-				break;
-			case 0x0002:
-				chip8->V[x] &= chip8->V[y];
-				break;
-			case 0x0003:
-				chip8->V[x] ^= chip8->V[y];
-				break;
-			case 0x0004:
-				chip8->V[x] += chip8->V[y];
-				break;
-			case 0x0005:
-				if (chip8->V[x] > chip8->V[y])
-					chip8->V[0xF] = 1;
-				else
-					chip8->V[0xF] = 0;
+		case 0x0000:
+			chip8->V[x] = chip8->V[y];
+			break;
+		case 0x0001:
+			chip8->V[x] |= chip8->V[y];
+			break;
+		case 0x0002:
+			chip8->V[x] &= chip8->V[y];
+			break;
+		case 0x0003:
+			chip8->V[x] ^= chip8->V[y];
+			break;
+		case 0x0004:
+			chip8->V[x] += chip8->V[y];
+			break;
+		case 0x0005:
+			if ((chip8->V[x] -= chip8->V[y]) > 0)
+				chip8->V[0xF] = 1;
+			else
+				chip8->V[0xF] = 0;
+			break;
+		case 0x0006:
+			if ((chip8->V[x] = chip8->V[y]) & 00000001)
+				chip8->V[0xF] = 1;
+			else
+				chip8->V[0xF] = 0;
 
-				chip8->V[x] -= chip8->V[y];
-				break;
-			case 0x0006:
-				chip8->V[x] = chip8->V[y];
+			chip8->V[x] >>= 1;
+			break;
+		case 0x0007:
+			if ((chip8->V[y] -= chip8->V[x]) > 0)
+				chip8->V[0xF] = 1;
+			else
+				chip8->V[0xF] = 0;
+			break;
+		case 0x000E:
+			if ((chip8->V[x] = chip8->V[y]) & 10000000)
+				chip8->V[0xF] = 1;
+			else
+				chip8->V[0xF] = 0;
 
-				if (chip8->V[x] & 00000001)
-					chip8->V[0xF] = 1;
-				else
-					chip8->V[0xF] = 0;
-
-				chip8->V[x] >>= 1;
-				break;
-			case 0x0007:
-				if (chip8->V[y] > chip8->V[x])
-					chip8->V[0xF] = 1;
-				else
-					chip8->V[0xF] = 0;
-
-				chip8->V[x] = chip8->V[y] - chip8->V[x];
-				break;
-			case 0x000E:
-				chip8->V[x] = chip8->V[y];
-
-				if (chip8->V[x] & 10000000)
-					chip8->V[0xF] = 1;
-				else
-					chip8->V[0xF] = 0;
-
-				chip8->V[x] <<= 1;
-				break;
-			default:
-				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
-				exit(1);
+			chip8->V[x] <<= 1;
+			break;
+		default:
+			op_error(opcode);
 		}
 		break;
 	case 0x9000:
@@ -219,36 +214,59 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->PC = chip8->V[0x0] + (opcode & 0x0FFF);
 		break;
 	case 0xC000:
-		chip8->V[(opcode & 0x0F00) >> 8] = (rand() % 256) & 0x00FF;
+		chip8->V[x] = (rand() % 256) & 0x00FF;
 		break;
 	case 0xD000:
 		op_DXYN(chip8, screen, chip8->V[x] % SCREEN_WIDTH, chip8->V[y] % SCREEN_HEIGHT, opcode & 0x000F);
 		break;
 	case 0xE000:
 		switch (opcode & 0x00FF) {
-			case 0x009E:
-				if (chip8->keypad[chip8->V[x]])
-					chip8->PC += 2;
-
-				break;
-			case 0x00A1:
-				if (!chip8->keypad[chip8->V[x]])
-					chip8->PC += 2;
-
-				break;
-			default:
-				(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+		case 0x009E:
+			if (chip8->keypad[chip8->V[x]])
+				chip8->PC += 2;
+			break;
+		case 0x00A1:
+			if (!chip8->keypad[chip8->V[x]])
+				chip8->PC += 2;
+			break;
+		default:
+			op_error(opcode);
 		}
 		break;
 	case 0xF000:
+		switch (opcode & 0x00FF) {
+		case 0x0007:
+			chip8->V[x] = chip8->delay;
+			break;
+		case 0x000A:
+			op_FX0A(chip8, x);
+			break;
+		case 0x0015:
+			chip8->delay = chip8->V[x];
+			break;
+		case 0x0018:
+			chip8->sound = chip8->V[x];
+			break;
+		case 0x001E:
+			if ((chip8->I += chip8->V[x]) > 1000)
+				chip8->V[0xF] = 1;
+			break;
+		case 0x0029:
+			chip8->I = chip8->V[x] * 5;
+			break;
+		case 0x0033:
+			op_FX33(chip8, x);
+			break;
+		default:
+			op_error(opcode);
+		}
 		break;
 	default:
-		(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
-		exit(1);
+		op_error(opcode);
 	}
 }
 
-void
+static void
 op_DXYN(struct cpu *chip8, struct display *screen, uint8_t x, uint8_t y, uint8_t height)
 {
 	uint8_t i, j, pixel;
@@ -268,6 +286,37 @@ op_DXYN(struct cpu *chip8, struct display *screen, uint8_t x, uint8_t y, uint8_t
 		}
 	}
 	update_display(screen);
+}
+
+static void
+op_FX0A(struct cpu *chip8, uint8_t x)
+{
+	uint8_t i, key_pressed;
+	key_pressed = 0;
+
+	for (i = 0; i < 16; i++) {
+		if (chip8->keypad[i]) {
+			chip8->V[x] = i;
+			key_pressed = 1;
+			break;
+		}
+	}
+
+	if (!key_pressed)
+		chip8->PC -= 2;
+}
+
+static void
+op_FX33(struct cpu *chip8, uint8_t x)
+{
+	(void)printf("unimplemented\n");
+}
+
+static void
+op_error(uint16_t opcode)
+{
+	(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+	exit(1);
 }
 
 void

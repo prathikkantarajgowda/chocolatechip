@@ -26,9 +26,8 @@
  *	 - initialization function for display (SDL)
  *
  * todo:
- *	 - keyboard
  *	 - sound (just need beep)
- *	 - get/fetch/execute
+ *	 - all opcodes
  *
  */
 
@@ -37,6 +36,8 @@
 #include "cpu.h"
 #include "display.h"
 #include "input.h"
+
+static void usage_error(void);
 
 int
 main(int argc, char **argv)
@@ -47,9 +48,7 @@ main(int argc, char **argv)
 	srand(time(NULL));
 
 	if (argc != 2) {
-		(void)fprintf(stderr,
-			"One ROM file needed. Usage: chocolatechip rom.ch8\n");
-		return 1;
+		usage_error();
 	}
 
 	init_cpu(&chip8, argv[1]);
@@ -61,7 +60,12 @@ main(int argc, char **argv)
 		decode_execute(&chip8, &screen, fetch(&chip8));
 	}
 
-	kill_display(&screen);
-
 	return 0;
+}
+
+static void
+usage_error(void)
+{
+	(void)fprintf(stderr, "One ROM file needed. Usage: ./chocolatechip rom.ch8\n");
+	exit(1);
 }

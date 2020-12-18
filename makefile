@@ -33,7 +33,7 @@ cpu.o: cpu.c cpu.h
 display.o: display.c display.h
 	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
 
-input.o: input.c
+input.o: input.c input.h
 	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
 
 .PHONY: clean
