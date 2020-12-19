@@ -20,7 +20,12 @@
  * completed opcodes:
  * 	- 0x0NNN
  * 	- 0x00E0
+ * 	- 0x00EE
  *	- 0x1NNN
+ *	- 0x2NNN
+ *	- 0x3NNN
+ *	- 0x4XNN
+ *	- 0x5XY0
  *	- 0x6XNN
  *	- 0x7XNN
  *	- 0x8XY0
@@ -32,6 +37,7 @@
  * 	- 0x8XY6
  * 	- 0x8XY7
  * 	- 0x8XYE
+ * 	- 0x9XY0
  *	- 0xANNN
  *	- 0xBNNN
  *	- 0xCXNN
@@ -44,17 +50,10 @@
  * 	- 0xFX1E
  * 	- 0xFX0A
  * 	- 0xFX29
- *
- * todo:
- * 	- 0x00EE
- * 	- 0x2NNN
- * 	- 0x3XNN
- * 	- 0x4XNN
- * 	- 0x5XY0
- * 	- 0x9XY0
  * 	- 0xFX33
  * 	- 0xFX55
  * 	- 0xFX65
+ *
  */
 
 #include <string.h>
@@ -83,16 +82,20 @@ static const uint8_t fontset[80] = {
 static void op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
 static void op_FX0A(struct cpu *, uint8_t);
 static void op_FX33(struct cpu *, uint8_t);
+static void op_FX55(struct cpu *, uint8_t);
+static void op_FX65(struct cpu *, uint8_t);
 static void op_error(struct display *, uint16_t);
 
 void
 init_cpu(struct cpu *chip8, char *romfile)
 {
+	/* Clears memory, stack, V, keypad */
 	(void)memset(chip8->memory, 0, 4096);
 	(void)memset(chip8->stack, 0, 16 * 2);
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
 
+	/* Loads fontset */
 	(void)memcpy(chip8->memory, fontset, 80);
 
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
@@ -102,7 +105,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 
 	(void)printf("%s rom successfully loaded\n", romfile);
 
-	/* Load game ROM into memory starting from 0x200 (512 in decimal) */
+	/* Load game ROM into memory starting from 0x200 */
 	(void)fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
 	(void)fclose(chip8->rom);
 
@@ -137,6 +140,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			update_display(screen);
 			break;
 		case 0x00EE:
+			chip8->PC = chip8->stack[--chip8->SP];
 			break;
 		default:
 			op_error(screen, opcode);
@@ -150,10 +154,16 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->PC = nnn;
 		break;
 	case 0x3000:
+		if (chip8->V[x] == nn)
+			chip8->PC += 2;
 		break;
 	case 0x4000:
+		if (chip8->V[x] != nn)
+			chip8->PC += 2;
 		break;
 	case 0x5000:
+		if (chip8->V[x] == chip8->V[y])
+			chip8->PC += 2;
 		break;
 	case 0x6000:
 		chip8->V[x] = nn;
@@ -211,6 +221,8 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		}
 		break;
 	case 0x9000:
+		if (chip8->V[x] != chip8->V[y])
+			chip8->PC += 2;
 		break;
 	case 0xA000:
 		chip8->I = nnn;
@@ -260,7 +272,13 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			chip8->I = chip8->V[x] * 5;
 			break;
 		case 0x0033:
-			op_FX33(chip8, x);
+			op_FX33(chip8, chip8->V[x]);
+			break;
+		case 0x0055:
+			op_FX55(chip8, x);
+			break;
+		case 0x0065:
+			op_FX65(chip8, x);
 			break;
 		default:
 			op_error(screen, opcode);
@@ -312,9 +330,32 @@ op_FX0A(struct cpu *chip8, uint8_t x)
 }
 
 static void
-op_FX33(struct cpu *chip8, uint8_t x)
+op_FX33(struct cpu *chip8, uint8_t vx)
 {
-	(void)printf("unimplemented\n");
+	int8_t i;
+
+	for (i = 2; i >= 0; i--) {
+		chip8->memory[chip8->I+i] = vx % 10;
+		vx /= 10;
+	}
+}
+
+static void
+op_FX55(struct cpu *chip8, uint8_t x)
+{
+	uint8_t i;
+
+	for (i = 0; i <= x; i++)
+		chip8->memory[chip8->I+i] = chip8->V[i];
+}
+
+static void
+op_FX65(struct cpu *chip8, uint8_t x)
+{
+	uint8_t i;
+
+	for (i = 0; i <= x; i++)
+		chip8->V[i] = chip8->memory[chip8->I + i];
 }
 
 static void

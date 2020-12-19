@@ -17,7 +17,7 @@
 .POSIX:
 .SUFFIXES:
 
-CC = gcc
+CC = clang
 CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
 CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
 CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
@@ -30,6 +30,7 @@ all: chocolatechip
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f chocolatechip $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/chocolatechip
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/chocolatechip

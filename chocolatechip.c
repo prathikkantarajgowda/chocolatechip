@@ -67,6 +67,6 @@ main(int argc, char **argv)
 static void
 usage_error(void)
 {
-	(void)fprintf(stderr, "One ROM file needed. Usage: ./chocolatechip rom.ch8\n");
+	(void)fprintf(stderr, "One ROM file needed. Usage: chocolatechip rom.ch8\n");
 	exit(1);
 }
