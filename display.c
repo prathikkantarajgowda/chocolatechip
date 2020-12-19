@@ -58,9 +58,13 @@ update_display(struct display *screen)
 void
 kill_display(struct display *screen)
 {
-	SDL_DestroyWindow(screen->win);
-	SDL_DestroyRenderer(screen->renderer);
-	SDL_DestroyTexture(screen->texture);
+	if (screen->win)
+		SDL_DestroyWindow(screen->win);
+	if (screen->renderer)
+		SDL_DestroyRenderer(screen->renderer);
+	if (screen->texture)
+		SDL_DestroyTexture(screen->texture);
+
 	SDL_Quit();
 }
 

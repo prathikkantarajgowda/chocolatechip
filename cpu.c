@@ -61,7 +61,7 @@
 
 #include "cpu.h"
 
-static const uint8_t chip8_fontset[80] = {
+static const uint8_t fontset[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, /* 0 */
         0x20, 0x60, 0x20, 0x20, 0x70, /* 1 */
         0xF0, 0x10, 0xF0, 0x80, 0xF0, /* 2 */
@@ -83,7 +83,7 @@ static const uint8_t chip8_fontset[80] = {
 static void op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
 static void op_FX0A(struct cpu *, uint8_t);
 static void op_FX33(struct cpu *, uint8_t);
-static void op_error(uint16_t);
+static void op_error(struct display *, uint16_t);
 
 void
 init_cpu(struct cpu *chip8, char *romfile)
@@ -93,7 +93,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)memset(chip8->V, 0, 16);
 	(void)memset(chip8->keypad, 0, 16);
 
-	(void)memcpy(chip8->memory, chip8_fontset, 80);
+	(void)memcpy(chip8->memory, fontset, 80);
 
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
 		(void)fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
@@ -127,6 +127,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	uint8_t x = (opcode & 0x0F00) >> 8;
 	uint8_t y = (opcode & 0x00F0) >> 4;
 	uint8_t nn = opcode & 0x00FF;
+	uint16_t nnn = opcode & 0x0FFF;
 
 	switch (opcode & 0xF000) {
 	case 0x0000:
@@ -135,14 +136,18 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			clear_display(screen);
 			update_display(screen);
 			break;
+		case 0x00EE:
+			break;
 		default:
-			op_error(opcode);
+			op_error(screen, opcode);
 		}
 		break;
 	case 0x1000:
-		chip8->PC = opcode & 0x0FFF;
+		chip8->PC = nnn;
 		break;
 	case 0x2000:
+		chip8->stack[(chip8->SP++) & 0xF] = chip8->PC;
+		chip8->PC = nnn;
 		break;
 	case 0x3000:
 		break;
@@ -202,16 +207,16 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			chip8->V[x] <<= 1;
 			break;
 		default:
-			op_error(opcode);
+			op_error(screen, opcode);
 		}
 		break;
 	case 0x9000:
 		break;
 	case 0xA000:
-		chip8->I = opcode & 0x0FFF;
+		chip8->I = nnn;
 		break;
 	case 0xB000:
-		chip8->PC = chip8->V[0x0] + (opcode & 0x0FFF);
+		chip8->PC = chip8->V[0x0] + nnn;
 		break;
 	case 0xC000:
 		chip8->V[x] = (rand() % 256) & 0x00FF;
@@ -230,7 +235,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 				chip8->PC += 2;
 			break;
 		default:
-			op_error(opcode);
+			op_error(screen, opcode);
 		}
 		break;
 	case 0xF000:
@@ -258,11 +263,11 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			op_FX33(chip8, x);
 			break;
 		default:
-			op_error(opcode);
+			op_error(screen, opcode);
 		}
 		break;
 	default:
-		op_error(opcode);
+		op_error(screen, opcode);
 	}
 }
 
@@ -313,9 +318,10 @@ op_FX33(struct cpu *chip8, uint8_t x)
 }
 
 static void
-op_error(uint16_t opcode)
+op_error(struct display *screen, uint16_t opcode)
 {
 	(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+	kill_display(screen);
 	exit(1);
 }
 

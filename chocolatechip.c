@@ -51,6 +51,7 @@ main(int argc, char **argv)
 		usage_error();
 	}
 
+
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
 

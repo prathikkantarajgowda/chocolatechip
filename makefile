@@ -14,31 +14,42 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+.POSIX:
+.SUFFIXES:
+
 CC = gcc
 CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
 CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
 CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2
-LINKSDLFLAG = -lSDL2 -fsanitize=undefined
+LDFLAGS = -lSDL2 -fsanitize=undefined
+PREFIX = /usr/local
 
 all: chocolatechip
 
-chocolatechip: chocolatechip.o cpu.o display.o input.o
-	$(CC) $(PKGCONFIGFLAGS) $(LINKSDLFLAG) -o $@ $^
+install: all
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp -f chocolatechip $(DESTDIR)$(PREFIX)/bin
 
-chocolatechip.o: chocolatechip.c display.h
-	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
-
-cpu.o: cpu.c cpu.h
-	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
-
-display.o: display.c display.h
-	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
-
-input.o: input.c input.h
-	$(CC) $(PKGCONFIGFLAGS) -c $(CFLAGS) $<
-
-.PHONY: clean
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/chocolatechip
 
 clean:
-	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp *.gch
+	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp *.gch a.out
+
+chocolatechip: chocolatechip.o cpu.o display.o input.o
+	$(CC) $(PKGCONFIGFLAGS) $(LDFLAGS) -o $@ chocolatechip.o cpu.o display.o input.o
+
+chocolatechip.o: chocolatechip.c cpu.h display.h input.h
+
+cpu.o: cpu.c cpu.h
+
+display.o: display.c display.h
+
+input.o: input.c input.h
+
+.PHONY: clean install uninstall
+
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(CFLAGS) $(PKGCONFIGFLAGS) -c $<
