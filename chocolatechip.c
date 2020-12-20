@@ -33,6 +33,8 @@
 
 #include <time.h>
 
+#include <SDL2/SDL.h>
+
 #include "cpu.h"
 #include "display.h"
 #include "input.h"
@@ -56,9 +58,8 @@ main(int argc, char **argv)
 	init_display(&screen);
 
 	while (1) {
-		update_timers(&chip8);
 		keyboard_input(&chip8, &screen);
-		decode_execute(&chip8, &screen, fetch(&chip8));
+		cycle(&chip8, &screen);
 	}
 
 	return 0;

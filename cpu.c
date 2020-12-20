@@ -17,43 +17,6 @@
  *
  * cpu.c
  *
- * completed opcodes:
- * 	- 0x0NNN
- * 	- 0x00E0
- * 	- 0x00EE
- *	- 0x1NNN
- *	- 0x2NNN
- *	- 0x3NNN
- *	- 0x4XNN
- *	- 0x5XY0
- *	- 0x6XNN
- *	- 0x7XNN
- *	- 0x8XY0
- * 	- 0x8XY1
- * 	- 0x8XY2
- * 	- 0x8XY3
- * 	- 0x8XY4
- * 	- 0x8XY5
- * 	- 0x8XY6
- * 	- 0x8XY7
- * 	- 0x8XYE
- * 	- 0x9XY0
- *	- 0xANNN
- *	- 0xBNNN
- *	- 0xCXNN
- *	- 0xDXYN
- *	- 0xEX9E
- *	- 0xEXA1
- * 	- 0xFX07
- * 	- 0xFX15
- * 	- 0xFX18
- * 	- 0xFX1E
- * 	- 0xFX0A
- * 	- 0xFX29
- * 	- 0xFX33
- * 	- 0xFX55
- * 	- 0xFX65
- *
  */
 
 #include <string.h>
@@ -79,12 +42,15 @@ static const uint8_t fontset[80] = {
         0xF0, 0x80, 0xF0, 0x80, 0x80  /* F */
 };
 
-static void op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
-static void op_FX0A(struct cpu *, uint8_t);
-static void op_FX33(struct cpu *, uint8_t);
-static void op_FX55(struct cpu *, uint8_t);
-static void op_FX65(struct cpu *, uint8_t);
-static void op_error(struct display *, uint16_t);
+static uint16_t fetch(struct cpu *);
+static void 	decode_execute(struct cpu *, struct display *, uint16_t);
+static void 	op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
+static void 	op_FX0A(struct cpu *, uint8_t);
+static void 	op_FX33(struct cpu *, uint8_t);
+static void 	op_FX55(struct cpu *, uint8_t);
+static void 	op_FX65(struct cpu *, uint8_t);
+static void 	op_error(struct display *, uint16_t);
+static void	update_timers(struct cpu *);
 
 void
 init_cpu(struct cpu *chip8, char *romfile)
@@ -115,7 +81,18 @@ init_cpu(struct cpu *chip8, char *romfile)
 	chip8->sound = 0;
 }
 
-uint16_t
+void
+cycle(struct cpu *chip8, struct display *screen)
+{
+	uint8_t i;
+
+	for (i = 0; i <= 9; i++)
+		decode_execute(chip8, screen, fetch(chip8));
+
+	update_timers(chip8);
+}
+
+static uint16_t
 fetch(struct cpu *chip8)
 {
 	uint16_t opcode = chip8->memory[chip8->PC] << 8 | chip8->memory[chip8->PC+1];
@@ -124,7 +101,7 @@ fetch(struct cpu *chip8)
 	return opcode;
 }
 
-void
+static void
 decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {
 	uint8_t x = (opcode & 0x0F00) >> 8;
@@ -186,16 +163,23 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			chip8->V[x] ^= chip8->V[y];
 			break;
 		case 0x0004:
-			chip8->V[x] += chip8->V[y];
-			break;
-		case 0x0005:
-			if ((chip8->V[x] -= chip8->V[y]) > 0)
+			if ((chip8->V[x] + chip8->V[y]) > 255)
 				chip8->V[0xF] = 1;
 			else
 				chip8->V[0xF] = 0;
+
+			chip8->V[x] += chip8->V[y];
+			break;
+		case 0x0005:
+			if (chip8->V[x] > chip8->V[y])
+				chip8->V[0xF] = 1;
+			if (chip8->V[x] < chip8->V[y])
+				chip8->V[0xF] = 0;
+
+			chip8->V[x] -= chip8->V[y];
 			break;
 		case 0x0006:
-			if ((chip8->V[x] = chip8->V[y]) & 00000001)
+			if ((chip8->V[x] = chip8->V[y]) & 0x1)
 				chip8->V[0xF] = 1;
 			else
 				chip8->V[0xF] = 0;
@@ -203,13 +187,15 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			chip8->V[x] >>= 1;
 			break;
 		case 0x0007:
-			if ((chip8->V[y] -= chip8->V[x]) > 0)
+			if (chip8->V[y] > chip8->V[x])
 				chip8->V[0xF] = 1;
-			else
+			if (chip8->V[y] < chip8->V[x])
 				chip8->V[0xF] = 0;
+
+			chip8->V[y] -= chip8->V[x];
 			break;
 		case 0x000E:
-			if ((chip8->V[x] = chip8->V[y]) & 10000000)
+			if ((chip8->V[x] = chip8->V[y]) & 0x80)
 				chip8->V[0xF] = 1;
 			else
 				chip8->V[0xF] = 0;
@@ -366,11 +352,12 @@ op_error(struct display *screen, uint16_t opcode)
 	exit(1);
 }
 
-void
+static void
 update_timers(struct cpu *chip8)
 {
 	if (chip8->delay > 0)
 		chip8->delay--;
+
 	if (chip8->sound > 0) {
 		chip8->sound--;
 		(void)printf("beep\n");

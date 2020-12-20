@@ -43,9 +43,7 @@ struct cpu {
 	uint8_t keypad[16];
 };
 
-void	        init_cpu(struct cpu *, char *);
-uint16_t	fetch(struct cpu *);
-void	        decode_execute(struct cpu *, struct display *, uint16_t);
-void	        update_timers(struct cpu *);
+void init_cpu(struct cpu *, char *);
+void cycle(struct cpu *, struct display *);
 
 #endif
