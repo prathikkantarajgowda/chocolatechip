@@ -20,16 +20,17 @@
 
 #include "display.h"
 
-static void init_sdl(void);
+static void init_sdl(struct display *);
 static void create_window(struct display *);
 static void create_renderer(struct display *);
 static void create_texture(struct display *);
+static void sdl_error(struct display *);
 
 void
 init_display(struct display *screen)
 {
 	clear_display(screen);
-	init_sdl();
+	init_sdl(screen);
 	create_window(screen);
 	create_renderer(screen);
 	create_texture(screen);
@@ -69,12 +70,10 @@ kill_display(struct display *screen)
 }
 
 static void
-init_sdl(void)
+init_sdl(struct display *screen)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) {
-		(void)fprintf(stderr, "Could not initialize SDL: %s.\n",
-		    SDL_GetError());
-		exit(1);
+		sdl_error(screen);
 	}
 
 }
@@ -86,11 +85,7 @@ create_window(struct display *screen)
 	    SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE, SCREEN_HEIGHT*SCALE, 0);
 
 	if (!screen->win) {
-		(void)fprintf(stderr, "Could not create window: %s.\n",
-		    SDL_GetError());
-
-		SDL_Quit();
-		exit(1);
+		kill_display(screen);
 	}
 }
 
@@ -103,11 +98,7 @@ create_renderer(struct display *screen)
 	SDL_RenderSetLogicalSize(screen->renderer, SCREEN_WIDTH*SCALE,
 	    SCREEN_HEIGHT*SCALE);
 	if (!screen->renderer) {
-		SDL_DestroyWindow(screen->win);
-
-		(void)fprintf(stderr, "Could not create renderer: %s.\n",
-		    SDL_GetError());
-		exit(1);
+		sdl_error(screen);
 	}
 
 }
@@ -120,11 +111,14 @@ create_texture(struct display *screen)
 	    SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	if (!screen->texture) {
-		SDL_DestroyWindow(screen->win);
-		SDL_DestroyRenderer(screen->renderer);
-
-		(void)fprintf(stderr, "Could not create texture: %s.\n",
-		    SDL_GetError());
-		exit(1);
+		sdl_error(screen);
 	}
+}
+
+static void
+sdl_error(struct display *screen)
+{
+	(void)fprintf(stderr, "sdl error: %s\n", SDL_GetError());
+	kill_display(screen);
+	exit(EXIT_FAILURE);
 }

@@ -39,7 +39,7 @@
 #include "display.h"
 #include "input.h"
 
-static void usage_error(void);
+static void usage(void);
 
 int
 main(int argc, char **argv)
@@ -50,7 +50,7 @@ main(int argc, char **argv)
 	srand(time(NULL));
 
 	if (argc != 2) {
-		usage_error();
+		usage();
 	}
 
 
@@ -62,12 +62,12 @@ main(int argc, char **argv)
 		cycle(&chip8, &screen);
 	}
 
-	return 0;
+	exit(EXIT_SUCCESS);
 }
 
 static void
-usage_error(void)
+usage(void)
 {
-	(void)fprintf(stderr, "One ROM file needed. Usage: chocolatechip rom.ch8\n");
-	exit(1);
+	(void)fprintf(stderr, "usage: chocolatechip filename\n");
+	exit(EXIT_FAILURE);
 }

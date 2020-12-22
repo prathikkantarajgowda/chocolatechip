@@ -66,7 +66,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
 		(void)fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	(void)printf("%s rom successfully loaded\n", romfile);
@@ -347,9 +347,9 @@ op_FX65(struct cpu *chip8, uint8_t x)
 static void
 op_error(struct display *screen, uint16_t opcode)
 {
-	(void)fprintf(stderr, "Unsupported opcode: %x\n", opcode);
+	(void)fprintf(stderr, "unsupported opcode: %x\n", opcode);
 	kill_display(screen);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 static void
