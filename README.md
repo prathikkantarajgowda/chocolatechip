@@ -3,11 +3,13 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 
 ![screenshot](/screenshot.png)
 
+
 ## Description
 chocolatechip is a program that allows you to run programs written in the CHIP-8
 language initially intended for the COSMIC VIP. To do this, chocolatechip
 implements the opcodes for the language, and also fulfills the specifications
 for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
+
 
 ## Overview
 - The opcodes are handled by a simple switch statement in the cpu.c file.
@@ -24,6 +26,8 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 	<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
 	<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
 	<kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd>
+- Use Escape key to exit/quit the program
+	<kbd>Escape</kbd>
 
 
 ## Bugs/Issues
@@ -31,6 +35,7 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
   but Space Invaders runs extremely fast.
 - Audio is currently unimplemented (it "beeps" to stdout instead)
 - Has only been tested on Linux (Debian 10 specifically)
+
 
 ## Installation
 - Prerequisites: git, make, SDL2, and either clang or gcc
