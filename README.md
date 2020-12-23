@@ -1,8 +1,13 @@
 # chocolatechip
-
 A CHIP-8 Emulator written in C99 by Prathik Gowda
 
 ![screenshot](/screenshot.png)
+
+## Description
+chocolatechip is a program that allows you to run programs written in the CHIP-8
+language initially intended for the COSMIC VIP. To do this, chocolatechip
+implements the opcodes for the language, and also fulfills the specifications
+for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 
 ## Overview
 - The opcodes are handled by a simple switch statement in the cpu.c file.
