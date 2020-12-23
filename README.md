@@ -9,6 +9,8 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - Display and input are both handled by SDL2 graphics library
 	- I use an integer array of size (64 x 32) to represent the display.
 		- This is drawn onto an SDL window using a Texture and Renderer.
+- Style loosely follows OpenBSD KNF
+- Compilation, installation, and uninstallation handled by makefile
 
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
@@ -33,15 +35,25 @@ cd chocolatechip
 ```
 vim makefile
 ```
-4. Install (makefile installs to /usr/local/bin, requiring root privelages)
+4. Install (makefile installs to /usr/local/bin, requiring root privilages)
 ```
 # make clean install
+```
+
+## Uninstallation
+```
+# make uninstall
 ```
 
 ## Usage
 Run chocolatechip with ROM file as argument:
 ```
 $ chocolatechip SpaceInvaders.ch8
+
+```
+To remove object files and executeables from the repository directory:
+```
+make clean
 ```
 
 ## Resources Used
