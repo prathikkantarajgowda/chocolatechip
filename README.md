@@ -54,6 +54,7 @@ $ make clean
 ```
 
 ## Uninstallation
+Remove executable from /usr/local/bin:
 ```
 # make uninstall
 ```
