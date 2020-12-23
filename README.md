@@ -15,10 +15,10 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - ROMs not included
 - Uses the following keypad for input:
 
-[ 1 | 2 | 3 | 4 ]\
-[ Q | W | E | R ]\
-[ A | S | D | F ]\
-[ Z | X | C | V ]
+1 	2 	3 	C\
+4 	5 	6 	D\
+7 	8 	9 	E\
+A 	0 	B 	F\
 
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
