@@ -53,7 +53,7 @@ $ chocolatechip SpaceInvaders.ch8
 ```
 To remove object files and executeables from the repository directory:
 ```
-make clean
+$ make clean
 ```
 
 ## Resources Used
