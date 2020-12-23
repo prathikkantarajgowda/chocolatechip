@@ -13,12 +13,15 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - Compilation, installation, and uninstallation handled by makefile
 - Licensed under AGPLv3
 - ROMs not included
+- Repository cover art is "Jupiter in the Guise of Diana and Callisto" by
+  Boucher
+  	- Procured from the Met website, is in the public domain
 - Uses the following keypad for input:
 
-<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
-<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
-<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
-<kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd>
+	<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
+	<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
+	<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
+	<kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd>
 
 
 ## Bugs/Issues
