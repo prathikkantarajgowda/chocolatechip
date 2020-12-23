@@ -20,6 +20,7 @@
  * todo:
  *	 - sound (just need beep)
  *	 - timing
+ *	 - man page?
  *
  */
 

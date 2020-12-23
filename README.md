@@ -26,7 +26,7 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 	<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
 	<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
 	<kbd>Z</kbd> <kbd>X</kbd> <kbd>C</kbd> <kbd>V</kbd>
-- Use Escape key to exit/quit the program
+- Use Escape key to exit/quit the program\
 	<kbd>Escape</kbd>
 
 
