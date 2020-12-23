@@ -15,11 +15,6 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - ROMs not included
 - Uses the following keypad for input:
 
-	1 	2 	3 	4\
-	Q 	W 	E 	R\
-	A 	S 	D 	F\
-	Z 	X 	C 	V
-
 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
 <kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
 <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
