@@ -13,6 +13,15 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - Compilation, installation, and uninstallation handled by makefile
 - Licensed under AGPLv3
 - ROMs not included
+- Uses the following keypad for input:
+
+ 1 | 2 | 3 | 4
+---------------
+ Q | W | E | R
+---------------
+ A | S | D | F
+---------------
+ Z | X | C | V
 
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
