@@ -2,6 +2,8 @@
 
 A CHIP-8 Emulator written in C99 by Prathik Gowda
 
+![screenshot](/screenshot.png)
+
 ## Overview
 - The opcodes are handled by a simple switch case in the cpu.c file.
 - Display and input are both handled by SDL2 graphics library
@@ -16,7 +18,7 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 ## Installation
 
 - Prerequisites: git, make, SDL2, and either clang or gcc
-- OS: Program is intended for Unix/Unix-likes. Tested on Debian 10. Makefile
+- OS: Program is intended for UNIX/UNIX-likes. Tested on Debian 10. Makefile
 should be BSD compatible (tested with FreeBSD's bmake on Linux)
 
 1. Clone repository
