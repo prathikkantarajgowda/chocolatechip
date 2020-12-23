@@ -18,7 +18,7 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 [ 1 | 2 | 3 | 4 ]\
 [ Q | W | E | R ]\
 [ A | S | D | F ]\
-[ Z | X | C | V ]\
+[ Z | X | C | V ]
 
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
