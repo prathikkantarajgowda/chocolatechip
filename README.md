@@ -20,6 +20,12 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 	A 	S 	D 	F\
 	Z 	X 	C 	V
 
+<kbd>1 <kbd>2 <kbd>3 <kbd>4\
+<kbd>Q <kbd>W <kbd>E <kbd>R\
+<kbd>A <kbd>S <kbd>D <kbd>F\
+<kbd>Z <kbd>X <kbd>C <kbd>V
+
+
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
   but Space Invaders runs extremely fast.
