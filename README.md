@@ -11,14 +11,16 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 		- This is drawn onto an SDL window using a Texture and Renderer.
 - Style loosely follows OpenBSD KNF
 - Compilation, installation, and uninstallation handled by makefile
+- Licensed under AGPLv3
+- ROMs not included
 
 ## Bugs/Issues
 - Timing is off depending on the ROM. For example, Pong runs at a normal speed,
   but Space Invaders runs extremely fast.
 - Audio is currently unimplemented (it "beeps" to stdout instead)
+- Has only been tested on Linux (Debian 10 specifically)
 
 ## Installation
-
 - Prerequisites: git, make, SDL2, and either clang or gcc
 - OS: Program is intended for UNIX/UNIX-likes. Tested on Debian 10. Makefile
 should be BSD compatible (tested with FreeBSD's bmake on Linux)
@@ -40,11 +42,6 @@ vim makefile
 # make clean install
 ```
 
-## Uninstallation
-```
-# make uninstall
-```
-
 ## Usage
 Run chocolatechip with ROM file as argument:
 ```
@@ -54,6 +51,11 @@ $ chocolatechip SpaceInvaders.ch8
 To remove object files and executeables from the repository directory:
 ```
 $ make clean
+```
+
+## Uninstallation
+```
+# make uninstall
 ```
 
 ## Resources Used
