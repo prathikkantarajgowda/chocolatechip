@@ -16,11 +16,11 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 - Uses the following keypad for input:
 
   1 | 2 | 3 | 4
- ---------------
+ ===============
   Q | W | E | R
- ---------------
+ ===============
   A | S | D | F
- ---------------
+ ===============
   Z | X | C | V
 
 ## Bugs/Issues
