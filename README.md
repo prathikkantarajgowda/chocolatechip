@@ -7,15 +7,12 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 ## Overview
 - The opcodes are handled by a simple switch case in the cpu.c file.
 - Display and input are both handled by SDL2 graphics library
-	- I use an integer array of size (64 x 32) to represent the display.
-		- This is drawn onto an SDL window using a Texture and Renderer.
 - Style loosely follows OpenBSD KNF
 - Compilation, installation, and uninstallation handled by makefile
 - Licensed under AGPLv3
 - ROMs not included
 - Repository cover art is "Jupiter in the Guise of Diana and Callisto" by
-  Boucher
-  	- Procured from the Met website, is in the public domain
+  Boucher (Procured from the Met website, public domain)
 - Uses the following keypad for input:
 
 	<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
