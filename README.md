@@ -15,8 +15,8 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 
 ## Installation
 
-Prerequisites: git, make, SDL2, and either clang or gcc
-OS: Program is intended for Unix/Unix-likes. Tested on Debian 10. Makefile
+- Prerequisites: git, make, SDL2, and either clang or gcc
+- OS: Program is intended for Unix/Unix-likes. Tested on Debian 10. Makefile
 should be BSD compatible (tested with FreeBSD's bmake on Linux)
 
 1. Clone repository
@@ -31,7 +31,6 @@ cd chocolatechip
 ```
 vim makefile
 ```
-(Then make appropriate edit if necessary)
 4. Install (makefile installs to /usr/local/bin, requiring root privelages)
 ```
 # make clean install
