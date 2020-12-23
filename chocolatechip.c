@@ -17,20 +17,13 @@
  *
  * chocolatechip.c
  *
- *
- *
- * completed:
- *	 - chip8 cpu data structure
- *	 - SDL display data structure
- *	 - initialization function for CPU
- *	 - initialization function for display (SDL)
- *
  * todo:
  *	 - sound (just need beep)
- *	 - all opcodes
+ *	 - timing
  *
  */
 
+#include <stdlib.h>
 #include <time.h>
 
 #include <SDL2/SDL.h>
@@ -52,7 +45,6 @@ main(int argc, char **argv)
 	if (argc != 2) {
 		usage();
 	}
-
 
 	init_cpu(&chip8, argv[1]);
 	init_display(&screen);
