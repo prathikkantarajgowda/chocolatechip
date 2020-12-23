@@ -5,7 +5,7 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 ![screenshot](/screenshot.png)
 
 ## Overview
-- The opcodes are handled by a simple switch case in the cpu.c file.
+- The opcodes are handled by a simple switch statement in the cpu.c file.
 - Display and input are both handled by SDL2 graphics library
 - Style loosely follows OpenBSD KNF
 - Compilation, installation, and uninstallation handled by makefile
@@ -52,7 +52,7 @@ vim makefile
 ## Usage
 Run chocolatechip with ROM file as argument:
 ```
-$ chocolatechip SpaceInvaders.ch8
+$ chocolatechip spaceinvaders.ch8
 
 ```
 To remove object files and executeables from the repository directory:

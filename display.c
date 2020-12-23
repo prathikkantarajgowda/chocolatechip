@@ -36,7 +36,7 @@ init_display(struct display *screen)
 	create_texture(screen);
 	SDL_RenderClear(screen->renderer);
 
-	(void)printf("SDL, window, renderer, and texture successfully initialized\n");
+	(void)printf("sdl, window, renderer, and texture successfully initialized\n");
 	update_display(screen);
 }
 

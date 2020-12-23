@@ -65,7 +65,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 	(void)memcpy(chip8->memory, fontset, 80);
 
 	if (!(chip8->rom = fopen(romfile, "rb"))) {
-		(void)fprintf(stderr, "Invalid ROM filename: %s\n", romfile);
+		(void)fprintf(stderr, "invalid ROM filename: %s\n", romfile);
 		exit(EXIT_FAILURE);
 	}
 
