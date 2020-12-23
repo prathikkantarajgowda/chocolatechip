@@ -1,9 +1,9 @@
 # chocolatechip
 
-A CHIP-8 Emulator written in C99 by Prathik Gowda (IN-PROGRESS)
+A CHIP-8 Emulator written in C99 by Prathik Gowda
 
 ## Overview
-- The opcodes are handled by a simple switch case statement in the cpu.c file.
+- The opcodes are handled by a simple switch case in the cpu.c file.
 - Display and input are both handled by SDL2 graphics library
 	- I use an integer array of size (64 x 32) to represent the display.
 		- This is drawn onto an SDL window using a Texture and Renderer.
@@ -15,13 +15,24 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda (IN-PROGRESS)
 
 ## Installation
 
-Prerequisites: git, make, and either clang or gcc
+Prerequisites: git, make, SDL2, and either clang or gcc
+OS: Program is intended for Unix/Unix-likes. Tested on Debian 10. Makefile
+should be BSD compatible (tested with FreeBSD's bmake on Linux)
 
 1. Clone repository
 ```
 $ git clone https://gitlab.com/prathikgowda/chocolatechip.git
 ```
-2. Install (makefile installs to /usr/local/bin)
+2. Move into the project folder
+```
+cd chocolatechip
+```
+3.  Edit makefile "CC" macro match your favorite C compiler
+```
+vim makefile
+```
+(Then make appropriate edit if necessary)
+4. Install (makefile installs to /usr/local/bin, requiring root privelages)
 ```
 # make clean install
 ```
