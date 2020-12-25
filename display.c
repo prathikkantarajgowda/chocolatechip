@@ -40,6 +40,7 @@ init_display(struct display *screen)
 	update_display(screen);
 }
 
+/* sets pixel array to black */
 void
 clear_display(struct display *screen)
 {
@@ -56,6 +57,7 @@ update_display(struct display *screen)
 	SDL_RenderPresent(screen->renderer);
 }
 
+/* kills window, renderer, texture, and quits SDL */
 void
 kill_display(struct display *screen)
 {

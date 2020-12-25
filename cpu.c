@@ -42,15 +42,15 @@ static const uint8_t fontset[80] = {
         0xF0, 0x80, 0xF0, 0x80, 0x80  /* F */
 };
 
-static uint16_t fetch(struct cpu *);
-static void 	decode_execute(struct cpu *, struct display *, uint16_t);
-static void 	op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
-static void 	op_FX0A(struct cpu *, uint8_t);
-static void 	op_FX33(struct cpu *, uint8_t);
-static void 	op_FX55(struct cpu *, uint8_t);
-static void 	op_FX65(struct cpu *, uint8_t);
-static void 	op_error(struct display *, uint16_t);
-static void	update_timers(struct cpu *);
+static uint16_t  fetch(struct cpu *);
+static void 	 decode_execute(struct cpu *, struct display *, uint16_t);
+static void 	 op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
+static void 	 op_FX0A(struct cpu *, uint8_t);
+static void 	 op_FX33(struct cpu *, uint8_t);
+static void 	 op_FX55(struct cpu *, uint8_t);
+static void 	 op_FX65(struct cpu *, uint8_t);
+static void 	 op_error(struct display *, uint16_t);
+static void	 update_timers(struct cpu *);
 
 void
 init_cpu(struct cpu *chip8, char *romfile)
@@ -81,6 +81,7 @@ init_cpu(struct cpu *chip8, char *romfile)
 	chip8->sound = 0;
 }
 
+/* Performs decode_execute 9 times for every timer decrement */
 void
 cycle(struct cpu *chip8, struct display *screen)
 {
@@ -92,6 +93,7 @@ cycle(struct cpu *chip8, struct display *screen)
 	update_timers(chip8);
 }
 
+/* fetches next opcode */
 static uint16_t
 fetch(struct cpu *chip8)
 {
@@ -101,6 +103,7 @@ fetch(struct cpu *chip8)
 	return opcode;
 }
 
+/* decodes and executes opcode */
 static void
 decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 {

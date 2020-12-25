@@ -33,6 +33,7 @@ static const uint8_t KEY_CODES[NUM_KEYS] = {
 	SDLK_z, SDLK_x, SDLK_c, SDLK_v,
 };
 
+/* gets user input and updates keypad */
 void
 keyboard_input(struct cpu *chip8, struct display *screen)
 {
