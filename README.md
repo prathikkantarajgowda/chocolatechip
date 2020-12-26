@@ -31,10 +31,14 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 
 
 ## Bugs/Issues
-- Timing is off depending on the ROM. For example, Pong runs at a normal speed,
-  but Space Invaders runs extremely fast.
 - Audio is currently unimplemented (it "beeps" to stdout instead)
 - Has only been tested on Linux (Debian 10 specifically)
+
+
+## Credits
+Huge thanks to nwxnk for helping me debug chocolatechip and fix the timing. I'm
+also greatly in debt to Tobias V. Langhoff for his high-level guide to writing a
+CHIP-8 emulator. Its excellent and is linked below.
 
 
 ## Installation
