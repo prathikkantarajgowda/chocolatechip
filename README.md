@@ -38,7 +38,7 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 ## Credits
 Huge thanks to nwxnk for helping me debug chocolatechip and fix the timing. I'm
 also greatly in debt to Tobias V. Langhoff for his high-level guide to writing a
-CHIP-8 emulator. Its excellent and is linked below.
+CHIP-8 emulator. It's excellent and is linked below.
 
 
 ## Installation
