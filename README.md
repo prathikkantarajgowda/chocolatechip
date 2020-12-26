@@ -65,6 +65,10 @@ Run chocolatechip with ROM file as argument:
 $ chocolatechip spaceinvaders.ch8
 
 ```
+To enable debugging information pass "-d" as the first argument
+```
+$ chocolatechip -d spaceinvaders.ch8
+```
 To remove object files and executeables from the repository directory:
 ```
 $ make clean

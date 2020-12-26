@@ -94,8 +94,7 @@ create_window(struct display *screen)
 static void
 create_renderer(struct display *screen)
 {
-	screen->renderer = SDL_CreateRenderer(screen->win, -1,
-	    SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	screen->renderer = SDL_CreateRenderer(screen->win, -1, SDL_RENDERER_ACCELERATED);
 
 	SDL_RenderSetLogicalSize(screen->renderer, SCREEN_WIDTH*SCALE,
 	    SCREEN_HEIGHT*SCALE);

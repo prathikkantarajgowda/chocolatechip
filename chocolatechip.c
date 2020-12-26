@@ -24,8 +24,9 @@
  *
  */
 
-#include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
+#include <unistd.h>
 
 #include <SDL2/SDL.h>
 
@@ -33,6 +34,10 @@
 #include "display.h"
 #include "input.h"
 
+const char *progname;
+const char *romfile;
+
+static void args(int, char **, struct cpu *);
 static void usage(void);
 
 int
@@ -43,24 +48,48 @@ main(int argc, char **argv)
 
 	srand(time(NULL));
 
-	if (argc != 2) {
-		usage();
-	}
-
-	init_cpu(&chip8, argv[1]);
+	args(argc, argv, &chip8);
+	init_cpu(&chip8, romfile);
 	init_display(&screen);
 
 	while (1) {
+		uint64_t start = SDL_GetPerformanceCounter();
+
 		keyboard_input(&chip8, &screen);
 		cycle(&chip8, &screen);
-	}
 
+		SDL_Delay((uint32_t) 16.666f -  (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency() * 1000.0f);
+	}
 	exit(EXIT_SUCCESS);
+}
+
+static void
+args(int argc, char **argv, struct cpu *chip8)
+{
+	char ch;
+
+	chip8->debug = 0;
+
+	if (argc < 2)
+		usage();
+
+	progname = argv[0];
+	romfile  = argv[argc - 1];
+
+	while ((ch = getopt(argc, argv, "d")) != -1) {
+		switch (ch) {
+		case 'd':
+			chip8->debug = 1;
+			break;
+		default:
+			usage();
+		}
+	}
 }
 
 static void
 usage(void)
 {
-	(void)fprintf(stderr, "usage: chocolatechip filename\n");
+	(void)fprintf(stderr, "usage: chocolatechip [-d] romfile\n");
 	exit(EXIT_FAILURE);
 }

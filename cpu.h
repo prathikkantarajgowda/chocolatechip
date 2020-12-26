@@ -29,6 +29,7 @@
 struct cpu {
 	FILE     *rom;
 
+	uint8_t  debug;
 	uint8_t  delay;
 	uint8_t  sound;
 	uint8_t  memory[4096];
@@ -43,7 +44,7 @@ struct cpu {
 	uint8_t keypad[16];
 };
 
-void init_cpu(struct cpu *, char *);
+void init_cpu(struct cpu *, const char *);
 void cycle(struct cpu *, struct display *);
 
 #endif

@@ -44,6 +44,7 @@ static const uint8_t fontset[80] = {
 
 static uint16_t  fetch(struct cpu *);
 static void 	 decode_execute(struct cpu *, struct display *, uint16_t);
+static void	 debug_v(struct cpu *, uint16_t);
 static void 	 op_DXYN(struct cpu *, struct display *, uint8_t, uint8_t, uint8_t);
 static void 	 op_FX0A(struct cpu *, uint8_t);
 static void 	 op_FX33(struct cpu *, uint8_t);
@@ -53,7 +54,7 @@ static void 	 op_error(struct display *, uint16_t);
 static void	 update_timers(struct cpu *);
 
 void
-init_cpu(struct cpu *chip8, char *romfile)
+init_cpu(struct cpu *chip8, const char *romfile)
 {
 	/* Clears memory, stack, V, keypad */
 	(void)memset(chip8->memory, 0, 4096);
@@ -87,7 +88,7 @@ cycle(struct cpu *chip8, struct display *screen)
 {
 	uint8_t i;
 
-	for (i = 0; i <= 9; i++)
+	for (i = 0; i < 9; i++)
 		decode_execute(chip8, screen, fetch(chip8));
 
 	update_timers(chip8);
@@ -111,6 +112,11 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	uint8_t y = (opcode & 0x00F0) >> 4;
 	uint8_t nn = opcode & 0x00FF;
 	uint16_t nnn = opcode & 0x0FFF;
+
+	if (chip8->debug == 1) {
+		printf("bug\n");
+		debug_v(chip8, opcode);
+	}
 
 	switch (opcode & 0xF000) {
 	case 0x0000:
@@ -182,27 +188,15 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 			chip8->V[x] -= chip8->V[y];
 			break;
 		case 0x0006:
-			if ((chip8->V[x] = chip8->V[y]) & 0x1)
-				chip8->V[0xF] = 1;
-			else
-				chip8->V[0xF] = 0;
-
+			chip8->V[0xF] = chip8->V[x] & 0x1;
 			chip8->V[x] >>= 1;
 			break;
 		case 0x0007:
-			if (chip8->V[y] > chip8->V[x])
-				chip8->V[0xF] = 1;
-			if (chip8->V[y] < chip8->V[x])
-				chip8->V[0xF] = 0;
-
-			chip8->V[y] -= chip8->V[x];
+			chip8->V[0xF] = (uint8_t)(chip8->V[y] > chip8->V[x]);
+			chip8->V[x] = chip8->V[y] - chip8->V[x];
 			break;
 		case 0x000E:
-			if ((chip8->V[x] = chip8->V[y]) & 0x80)
-				chip8->V[0xF] = 1;
-			else
-				chip8->V[0xF] = 0;
-
+			chip8->V[0xF] = (chip8->V[x] & 0x80) >> 7;
 			chip8->V[x] <<= 1;
 			break;
 		default:
@@ -220,7 +214,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 		chip8->PC = chip8->V[0x0] + nnn;
 		break;
 	case 0xC000:
-		chip8->V[x] = (rand() % 256) & 0x00FF;
+		chip8->V[x] = (rand() % 256) & nn;
 		break;
 	case 0xD000:
 		op_DXYN(chip8, screen, chip8->V[x] % SCREEN_WIDTH, chip8->V[y] % SCREEN_HEIGHT, opcode & 0x000F);
@@ -276,6 +270,20 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	default:
 		op_error(screen, opcode);
 	}
+}
+
+static void
+debug_v(struct cpu *chip8, uint16_t opcode)
+{
+	uint8_t i;
+
+	(void)printf("0x%x: %x", chip8->PC - 2, opcode);
+	(void)printf(" V: [");
+
+	for (i = 0; i < 16; i++)
+		(void)printf("%d, ", chip8->V[i]);
+
+	(void)printf("\b\b]\n");
 }
 
 static void
