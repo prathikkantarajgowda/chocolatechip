@@ -47,6 +47,7 @@ clear_display(struct display *screen)
 	(void)memset(screen->pixels, BLACK, NUM_PIXELS * 4);
 }
 
+/* redraws screen */
 void
 update_display(struct display *screen)
 {
@@ -116,6 +117,7 @@ create_texture(struct display *screen)
 	}
 }
 
+/* called to handle sdl error */
 static void
 sdl_error(struct display *screen)
 {

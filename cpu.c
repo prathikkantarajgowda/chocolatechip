@@ -82,7 +82,7 @@ init_cpu(struct cpu *chip8, const char *romfile)
 	chip8->sound = 0;
 }
 
-/* Performs decode_execute 9 times for every timer decrement */
+/* performs decode_execute 9 times for every timer decrement */
 void
 cycle(struct cpu *chip8, struct display *screen)
 {
@@ -113,10 +113,8 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	uint8_t nn = opcode & 0x00FF;
 	uint16_t nnn = opcode & 0x0FFF;
 
-	if (chip8->debug == 1) {
-		printf("bug\n");
+	if (chip8->debug)
 		debug_v(chip8, opcode);
-	}
 
 	switch (opcode & 0xF000) {
 	case 0x0000:
@@ -272,6 +270,7 @@ decode_execute(struct cpu *chip8, struct display *screen, uint16_t opcode)
 	}
 }
 
+/* enables debugging information for V memory */
 static void
 debug_v(struct cpu *chip8, uint16_t opcode)
 {
@@ -355,6 +354,7 @@ op_FX65(struct cpu *chip8, uint8_t x)
 		chip8->V[i] = chip8->memory[chip8->I + i];
 }
 
+/* called to handle unsupported opcode */
 static void
 op_error(struct display *screen, uint16_t opcode)
 {

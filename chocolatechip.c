@@ -19,13 +19,12 @@
  *
  * todo:
  *	 - sound (just need beep)
- *	 - timing
  *	 - man page?
  *
  */
 
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <SDL2/SDL.h>
