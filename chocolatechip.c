@@ -34,6 +34,8 @@
 #include "display.h"
 #include "input.h"
 
+#define DELAY_TIME 16.666f	/* delay time to produce 60fps (1000/16.666 = 60) */
+
 const char *progname;
 const char *romfile;
 
@@ -54,12 +56,14 @@ main(int argc, char **argv)
 
 	while (1) {
 		uint64_t start = SDL_GetPerformanceCounter();
-
 		keyboard_input(&chip8, &screen);
 		cycle(&chip8, &screen);
 
-		SDL_Delay((uint32_t) 16.666f -  (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency() * 1000.0f);
+		uint64_t end = SDL_GetPerformanceCounter();
+		double time_elapsed = ((end - start) * 1000) / SDL_GetPerformanceFrequency();
+		SDL_Delay((uint32_t) DELAY_TIME - time_elapsed);
 	}
+
 	exit(EXIT_SUCCESS);
 }
 
