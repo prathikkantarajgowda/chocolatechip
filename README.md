@@ -5,11 +5,10 @@ A CHIP-8 Emulator written in C99 by Prathik Gowda
 
 
 ## Description
-chocolatechip is a program that allows you to run programs written in the CHIP-8
-language initially intended for the COSMIC VIP. To do this, chocolatechip
-implements the opcodes for the language, and also fulfills the specifications
-for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
-
+chocolatechip acts as a virtual machine that runs game ROMs written in the
+CHIP-8 language originally intended for the COSMAC VIP micro-computer. The
+program is based on a fetch/decode/execute loop which executes hexadecimal
+instructions called opcodes.
 
 ## Overview
 - The opcodes are handled by a simple switch statement in the cpu.c file.
@@ -21,7 +20,6 @@ for the CHIP-8 virtual machine (4k memory, registers, stack, etc).
 - Repository cover art is "Jupiter in the Guise of Diana and Callisto" by
   Boucher (Procured from the Met website, public domain)
 - Uses the following keypad for input:
-
 	<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
 	<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
 	<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
