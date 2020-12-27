@@ -19,7 +19,7 @@ instructions called opcodes.
 - ROMs not included
 - Repository cover art is "Jupiter in the Guise of Diana and Callisto" by
   Boucher (Procured from the Met website, public domain)
-- Uses the following keypad for input:
+- Uses the following keypad for input:\
 	<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>\
 	<kbd>Q</kbd> <kbd>W</kbd> <kbd>E</kbd> <kbd>R</kbd>\
 	<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>\
