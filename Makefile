@@ -17,13 +17,14 @@
 .POSIX:
 .SUFFIXES:
 
-CC = clang
+CC = cc
 CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
 CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
 CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2
 LDFLAGS = -lSDL2 -fsanitize=undefined
 PREFIX = /usr/local
+MANPREFIX = $(PREFIX)/share/man
 
 all: chocolatechip
 
@@ -31,9 +32,13 @@ install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f chocolatechip $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/chocolatechip
+	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
+	cp -f chocolatechip.1 $(DESTDIR)$(MANPREFIX)/man1/chocolatechip.1
+	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/chocolatechip.1
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/chocolatechip
+	rm -f $(DESTDIR)$(PREFIX)/bin/chocolatechip\
+		$(DESTDIR)$(MANPREFIX)/man1/chocolatechip.1
 
 clean:
 	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp *.gch a.out
