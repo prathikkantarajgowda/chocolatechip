@@ -52,11 +52,7 @@ $ git clone https://gitlab.com/prathikgowda/chocolatechip.git
 ```
 cd chocolatechip
 ```
-3.  Edit makefile "CC" macro match your favorite C compiler
-```
-vim makefile
-```
-4. Install (makefile installs to /usr/local/bin, requiring root privilages)
+3. Install (makefile installs to /usr/local/bin, requiring root privilages)
 ```
 # make clean install
 ```
