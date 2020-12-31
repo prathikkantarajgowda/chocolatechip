@@ -19,7 +19,6 @@
  *
  * todo:
  *	 - sound (just need beep)
- *	 - man page?
  *
  */
 

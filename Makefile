@@ -13,18 +13,15 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+# Makefile
+# 
+
+include config.mk
 
 .POSIX:
 .SUFFIXES:
-
-CC = cc
-CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
-CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
-CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
-PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2
-LDFLAGS = -lSDL2 -fsanitize=undefined
-PREFIX = /usr/local
-MANPREFIX = $(PREFIX)/share/man
 
 all: chocolatechip
 
@@ -43,8 +40,8 @@ uninstall:
 clean:
 	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp *.gch a.out
 
-chocolatechip: chocolatechip.o cpu.o display.o input.o
-	$(CC) $(PKGCONFIGFLAGS) $(LDFLAGS) -o $@ chocolatechip.o cpu.o display.o input.o
+chocolatechip: $(OBJ)
+	$(CC) $(PKGCONFIGFLAGS) $(LDFLAGS) -o $@ $(OBJ)
 
 chocolatechip.o: chocolatechip.c cpu.h display.h input.h
 
