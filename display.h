@@ -21,7 +21,7 @@
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #define NUM_PIXELS	2048
 #define	SCREEN_WIDTH	64

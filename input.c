@@ -20,7 +20,7 @@
 
 #include <stdint.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "input.h"
 

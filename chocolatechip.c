@@ -26,7 +26,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "cpu.h"
 #include "display.h"

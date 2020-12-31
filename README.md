@@ -41,8 +41,8 @@ CHIP-8 emulator. It's excellent and is linked below.
 
 ## Installation
 - Prerequisites: git, make, SDL2, and either clang or gcc
-- OS: Program is intended for UNIX/UNIX-likes. Tested on Debian 10. Makefile
-should be BSD compatible (tested with FreeBSD's bmake on Linux)
+- OS: Program is intended for UNIX/UNIX-likes. Tested on Debian 10 and OpenBSD
+- Note: To run on OpenBSD, uncomment appropriate lines in the config.mk file
 
 1. Clone repository
 ```
