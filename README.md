@@ -30,7 +30,7 @@ instructions called opcodes.
 
 ## Bugs/Issues
 - Audio is currently unimplemented (it "beeps" to stdout instead)
-- Has only been tested on Linux (Debian 10 specifically)
+- Has only been tested on Linux (Debian 10 specifically) and OpenBSD
 
 
 ## Credits
