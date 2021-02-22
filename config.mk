@@ -18,21 +18,18 @@
 #  config.mk
 #
 
-CC = cc
-CFLAGS = -std=c99 -pedantic -Wall -Os
-# CFLAGS = -O2 -std=c99 -pedantic -fsanitize=undefined -Wall -Wcast-align
-# CFLAGS += -Wcast-qual -Wextra -Wfloat-equal -Wshadow -Wsign-conversion
-# CFLAGS += -Wstrict-overflow=5 -Wstrict-prototypes -Wswitch-default -Wundef
+CC	       = cc
+CFLAGS	       = -std=c99 -Wall -Wextra -pedantic -O2
 
 PKGCONFIGFLAGS = -D_REENTRANT -I/usr/include/SDL2
-PKGCONFIGFLAGS = -lSDL2
+LINKFLAGS      = -lSDL2
 
 # uncomment following 2 lines on OpenBSD
 # PKGCONFIGFLAGS = -I/usr/local/include/SDL2 -D_REENTRANT
-# LDFLAGS = -L/usr/local/lib -L/usr/X11R6/lib -lSDL2
+# LINKFLAGS = -L/usr/local/lib -L/usr/X11R6/lib -lSDL2
 
-PREFIX = /usr/local
+PREFIX    = /usr/local
 MANPREFIX = $(PREFIX)/share/man
 
-SRC = chocolatechip.c cpu.c display.c input.c
-OBJ = $(SRC:.c=.o)
+SRC	  = chocolatechip.c cpu.c display.c input.c
+OBJ	  = $(SRC:.c=.o)

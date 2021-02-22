@@ -41,7 +41,7 @@ clean:
 	rm -f *.o *~ chocolatechip *.c# *.swp *.c.swp *.gch a.out
 
 chocolatechip: $(OBJ)
-	$(CC) $(PKGCONFIGFLAGS) $(LDFLAGS) -o $@ $(OBJ)
+	$(CC) $(PKGCONFIGFLAGS) -o $@ $(OBJ) $(LINKFLAGS)
 
 chocolatechip.o: chocolatechip.c cpu.h display.h input.h
 

@@ -73,7 +73,11 @@ init_cpu(struct cpu *chip8, const char *romfile)
 	(void)printf("%s rom successfully loaded\n", romfile);
 
 	/* Load game ROM into memory starting from 0x200 */
-	(void)fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom);
+	if (fread(chip8->memory + 0x200, 1, 4096 - 0x200, chip8->rom) == 0) {
+		(void)fprintf(stderr, "fread failed\n");
+		exit(EXIT_FAILURE);
+	}
+
 	(void)fclose(chip8->rom);
 
 	chip8->PC = 0x200;
